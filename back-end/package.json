@@ -15,7 +15,8 @@
     "mixme": "^0.3.5",
     "should": "^13.2.3",
     "supertest": "^4.0.2",
-    "uuid": "^8.3.0"
+    "uuid": "^8.3.0",
+    "yarn": "^1.22.10"
   },
   "devDependencies": {
     "mocha": "^8.1.3"
