@@ -4,8 +4,10 @@ import { jsx } from '@emotion/core'
 
 const styles = {
   footer: {
-    height: '30px',
-    backgroundColor: 'rgba(255,255,255,.3)',
+    height: '20px',
+    display : 'flex',
+    flexDirection: 'column',
+    backgroundColor: 'rgba(45,45,45)',
     flexShrink: 0,
   },
 }
@@ -13,7 +15,8 @@ const styles = {
 export default () => {
   return (
     <footer style={styles.footer}>
-      footer
+        <span> &copy; Pierre Herduin & Miriam Benallou </span>
+
     </footer>
   );
 }

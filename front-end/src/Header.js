@@ -11,8 +11,11 @@ import Context from './Context'
 
 const useStyles = (theme) => ({
   header: {
+    textAlign:'center',
+    fontSize: '35px',
     padding: theme.spacing(1),
-    backgroundColor: 'rgba(255,255,255,.3)',
+    height : '40px',
+    backgroundColor: 'rgba(45,45,45)',
     flexShrink: 0,
   },
   headerLogIn: {
@@ -53,7 +56,7 @@ export default ({
       >
         <MenuIcon />
       </IconButton>
-      Header
+      ECE Chat
       {
         oauth ?
           <span>
@@ -61,9 +64,9 @@ export default ({
             <Link onClick={onClickLogout}>logout</Link>
           </span>
         :
-          <span>new user</span>
+          <span> </span>
       }
-      
+
     </header>
   );
 }
