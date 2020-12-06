@@ -53,6 +53,7 @@ const sha256 = (buffer) => {
 
 const useStyles = (theme) => ({
   root: {
+
     flex: '1 1 auto',
     background: theme.palette.background.default,
     display: 'flex',
@@ -78,7 +79,7 @@ const useStyles = (theme) => ({
   },
   button: {
     margin: "50px 50px 50px 50px",
-    padding: "50px 50px 50px 50px",
+    padding: "20px 50px 20px 50px",
   }
 })
 
@@ -101,7 +102,7 @@ const CssTextField = withStyles({
         borderColor: 'green',
       },
     }
-  }
+  },
 })(TextField)
 
 const Redirect = ({
@@ -131,18 +132,72 @@ const Redirect = ({
     email: "",
     password: "",
   })
+
+
   const signUp = () => {
     setOpen(true)
   }
   const handleClose = () => {
     setOpen(false)
+    setErrorMessages({
+      firstname: "",
+      lastname: "",
+      email: "",
+      password: "",
+    })
   }
   const handleShowPassword = () => {
     setPasswordVisible(!passwordVisible)
   }
-  const handleFirstName = () => {
-    console.log("coucou")
+
+  const handleFirstName = (e) => {
+    if (e.target.value===""){
+    //  console.log("hi")
+      setErrorMessages({
+        firstname: "First name can't be empty.",
+        lastname: errorMessages.lastname,
+        email: errorMessages.email,
+        password: errorMessages.password,
+      })
+    }
   }
+
+  const handleLastName = (e) => {
+    if (e.target.value===""){
+    //  console.log("hi")
+      setErrorMessages({
+        firstname: errorMessages.firstname,
+        lastname: "last name can't be empty.",
+        email: errorMessages.email,
+        password: errorMessages.password,
+    })
+    }
+  }
+
+  const handlePassword = (e) => {
+    if (e.target.value===""){
+      //console.log("hi")
+      setErrorMessages({
+        firstname:errorMessages.firstname,
+        lastname : errorMessages.lastname,
+        email: errorMessages.email,
+        password: "password can't be empty.",
+      })
+    }
+  }
+
+  const handleEmail = (e) => {
+    if (e.target.value===""){
+      //console.log("hi")
+      setErrorMessages({
+        firstname: errorMessages.firstname,
+        lastname: errorMessages.lastname,
+        email: "email can't be empty.",
+        password: errorMessages.password,
+      })
+    }
+  }
+
   const handleSubmit = () => {
     let firstname = document.getElementById("first-name").value
     let lastname  = document.getElementById("last-name").value
@@ -164,6 +219,7 @@ const Redirect = ({
       <Dialog
         open={open}
         onClose={handleClose}
+        style={{borderRadius:'100px'}}
       >
         <DialogTitle id="dialog-title">Sign up</DialogTitle>
         <DialogContent>
@@ -174,9 +230,7 @@ const Redirect = ({
             type="text"
             variant="outlined"
             color=""
-            onChange={event => {
-              console.log("trig")
-            }}
+            onChange={handleFirstName}
             error={errorMessages.firstname.length > 0 ? true : false}
           />
           <CssTextField
@@ -185,6 +239,8 @@ const Redirect = ({
             label="Last name"
             type="text"
             variant="outlined"
+            onChange={handleLastName}
+            error={errorMessages.lastname.length > 0 ? true : false}
           />
           <CssTextField
             margin="dense"
@@ -193,6 +249,8 @@ const Redirect = ({
             type="email"
             fullWidth
             variant="outlined"
+            onChange={handleEmail}
+              error={errorMessages.email.length > 0 ? true : false}
           />
           <CssTextField
             margin="dense"
@@ -201,6 +259,8 @@ const Redirect = ({
             type={passwordVisible ? "text" : "password"}
             fullWidth
             variant="outlined"
+            onChange={handlePassword}
+            error={errorMessages.password.length > 0 ? true : false}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
