@@ -37,7 +37,7 @@
 * Inside `./dex-config/config.yml`, the frond-end application is already registered and CORS is activated. Now that Dex is built and configured, your can start the Dex server:
   ```yaml
   cd dex
-  bin/dex serve dex-config/config.yaml
+  bin/dex serve ../dex-config/config.yaml
   ```
 * Start the back-end
   ```bash
