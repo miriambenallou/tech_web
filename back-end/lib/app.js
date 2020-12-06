@@ -18,8 +18,15 @@ app.get('/', (req, res) => {
   ].join(''))
 })
 
+// DEBUG.
+app.get('/debug', async (req, res) => {
+  const arr = await db.debug()
+  res.json(arr)
+})
+
 // Channels
 
+// app.get('/channels', async (req, res) => {
 app.get('/channels', authenticate, async (req, res) => {
   const channels = await db.channels.list()
   res.json(channels)

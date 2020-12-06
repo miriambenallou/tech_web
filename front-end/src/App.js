@@ -22,7 +22,6 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: '#565E71',
-    padding: '50px',
   },
 }
 
@@ -33,6 +32,7 @@ export default () => {
   const drawerToggleListener = () => {
     setDrawerMobileVisible(!drawerMobileVisible)
   }
+  document.title = "ECE CHAT"
   return (
     <div className="App" css={styles.root}>
       <Header drawerToggleListener={drawerToggleListener}/>
@@ -54,7 +54,7 @@ export default () => {
         <Route path="/channels">
           {
             oauth ? (
-              <Main />
+              <Main oauth={oauth} />
             ) : (
               <Redirect
                 to={{

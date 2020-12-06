@@ -123,6 +123,19 @@ module.exports = {
   admin: {
     clear: async () => {
       await db.clear()
-    }
+    },
+  },
+  debug: async () => {
+    return new Promise( (resolve, reject) => {
+      let arr = []
+      db.createReadStream({
+      }).on( 'data', (data) => {
+        arr.push(data)
+      }).on( 'error', (err) => {
+        reject(err)
+      }).on( 'end', () => {
+        resolve(arr)
+      })
+    })
   }
 }

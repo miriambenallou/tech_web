@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 import crypto from 'crypto'
 import qs from 'qs'
@@ -6,10 +6,33 @@ import axios from 'axios'
 /** @jsx jsx */
 import { jsx } from '@emotion/core'
 // Layout
-import { useTheme } from '@material-ui/core/styles';
 import Link from '@material-ui/core/Link'
 // Local
 import Context from './Context'
+
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import IconButton from '@material-ui/core/IconButton';
+import Input from '@material-ui/core/Input';
+import FilledInput from '@material-ui/core/FilledInput';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import InputLabel from '@material-ui/core/InputLabel';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import {
+  ThemeProvider,
+  useTheme,
+  withTheme,
+  withStyles,
+  createMuiTheme
+} from '@material-ui/core/styles';
+
 import {
   useHistory
 } from "react-router-dom";
@@ -47,8 +70,39 @@ const useStyles = (theme) => ({
         display: 'block',
       },
     },
+    backgroundImage: 'url("background_tech_main.jpg")',
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center center",
+    backgroundAttachement: "fixed",
+    backgroundSize: "cover",
   },
+  button: {
+    margin: "50px 50px 50px 50px",
+    padding: "50px 50px 50px 50px",
+  }
 })
+
+const CssTextField = withStyles({
+  root: {
+    '& label.Mui-focused': {
+      color: "green"
+    },
+    '& .MuiInput-underline:after': {
+      borderBottomColor: 'green',
+    },
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: 'grey',
+      },
+      '&:hover fieldset': {
+        borderColor: 'white',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: 'green',
+      },
+    }
+  }
+})(TextField)
 
 const Redirect = ({
   config,
@@ -69,9 +123,105 @@ const Redirect = ({
     ].join('')
     window.location = url
   }
+  const [open, setOpen] = useState(false)
+  const [passwordVisible, setPasswordVisible] = useState(false)
+  const [errorMessages, setErrorMessages] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    password: "",
+  })
+  const signUp = () => {
+    setOpen(true)
+  }
+  const handleClose = () => {
+    setOpen(false)
+  }
+  const handleShowPassword = () => {
+    setPasswordVisible(!passwordVisible)
+  }
+  const handleFirstName = () => {
+    console.log("coucou")
+  }
+  const handleSubmit = () => {
+    let firstname = document.getElementById("first-name").value
+    let lastname  = document.getElementById("last-name").value
+    let email     = document.getElementById("email").value
+    let password  = document.getElementById("password").value
+
+    if (firstname.length === 0) {
+      setErrorMessages({firstname: "First name can't be empty."})
+    }
+
+    // setOpen(false)
+  }
+
   return (
     <div css={styles.root}>
-      <Link onClick={redirect} color="secondary">Login with OpenID Connect and OAuth2</Link>
+
+      <Button variant="contained" style={styles.button} onClick={redirect}>Sign in</Button>
+      <Button variant="contained" style={styles.button} onClick={signUp}>Sign up</Button>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+      >
+        <DialogTitle id="dialog-title">Sign up</DialogTitle>
+        <DialogContent>
+          <CssTextField
+            margin="dense"
+            id="first-name"
+            label="First name"
+            type="text"
+            variant="outlined"
+            color=""
+            onChange={event => {
+              console.log("trig")
+            }}
+            error={errorMessages.firstname.length > 0 ? true : false}
+          />
+          <CssTextField
+            margin="dense"
+            id="last-name"
+            label="Last name"
+            type="text"
+            variant="outlined"
+          />
+          <CssTextField
+            margin="dense"
+            id="email"
+            label="e-mail address"
+            type="email"
+            fullWidth
+            variant="outlined"
+          />
+          <CssTextField
+            margin="dense"
+            id="password"
+            label="Password"
+            type={passwordVisible ? "text" : "password"}
+            fullWidth
+            variant="outlined"
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleShowPassword}
+                    edge="end"
+                  >
+                    {passwordVisible ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              )
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" onClick={handleClose} color="secondary">Cancel</Button>
+          <Button variant="contained" onClick={handleSubmit} color="primary">Sign up</Button>
+        </DialogActions>
+      </Dialog>
+
     </div>
   )
 }
@@ -112,7 +262,7 @@ export default ({
   }
   const params = new URLSearchParams(window.location.search)
   const code = params.get('code')
-  // is there a code query parameters in the url 
+  // is there a code query parameters in the url
   if(!code){ // no: we are not being redirected from an oauth server
     if(!oauth){
       const codeVerifier = base64URLEncode(crypto.randomBytes(32))
@@ -120,12 +270,12 @@ export default ({
       return (
         <Redirect codeVerifier={codeVerifier} config={config} css={styles.root} />
       )
-    }else{ // yes: user is already logged in, great, is is working
+    } else { // yes: user is already logged in, great, is is working
       return (
         <Tokens oauth={oauth} css={styles.root} />
       )
     }
-  }else{ // yes: we are coming from an oauth server
+  } else { // yes: we are coming from an oauth server
     const codeVerifier = cookies.code_verifier
     useEffect( () => {
       const fetch = async () => {
