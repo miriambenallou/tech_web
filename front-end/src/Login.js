@@ -214,14 +214,7 @@ const Redirect = ({
   }
 
   const handleEmail = (e) => {
-    if (e.target.value === "") {
-      setErrorMessages({
-        firstname: errorMessages.firstname,
-        lastname: errorMessages.lastname,
-        email: "Email can't be empty.",
-        password: errorMessages.password,
-      })
-    } else if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(e.target.value) === false) {
+    if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(e.target.value) === false) {
       /*
       Regex expression has been found here : https://www.w3resource.com/javascript/form/email-validation.php
       */
@@ -254,10 +247,26 @@ const Redirect = ({
        ) {
          setOpen(false)
     } else {
-      handlePassword({target: password})
-      handleEmail({target: email})
-      handleLastName({target: lastname})
-      handleFirstName({target: firstname})
+      let ferr = "", lerr = "", eerr = "", perr = ""
+
+      if (firstname.value.length === 0) {
+        ferr = "First name can't be empty."
+      }
+      if (lastname.value.length === 0) {
+        lerr = "Last name can't be empty."
+      }
+      if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email.value) === false) {
+        eerr = "Email is invalid."
+      }
+      if (password.value.length < 6) {
+        perr = "Password must have minimum 6 characters."
+      }
+      setErrorMessages({
+        firstname: ferr,
+        lastname:  lerr,
+        email:     eerr,
+        password:  perr
+      })
     }
   }
 
