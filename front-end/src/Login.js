@@ -85,13 +85,22 @@ const useStyles = (theme) => ({
 
 const CssTextField = withStyles({
   root: {
+    '& .Mui-error': {
+      color: '#f44336'
+    },
+    '& .MuiFormLabel-root.Mui-error': {
+      color: '#f44336'
+    },
     '& label.Mui-focused': {
-      color: "green"
+      color: 'green'
     },
     '& .MuiInput-underline:after': {
       borderBottomColor: 'green',
     },
     '& .MuiOutlinedInput-root': {
+      '&.Mui-error .MuiOutlinedInput-notchedOutline': {
+        borderColor: '#f44336'
+      },
       '& fieldset': {
         borderColor: 'grey',
       },
@@ -151,10 +160,16 @@ const Redirect = ({
   }
 
   const handleFirstName = (e) => {
-    if (e.target.value===""){
-    //  console.log("hi")
+    if (e.target.value === "") {
       setErrorMessages({
         firstname: "First name can't be empty.",
+        lastname: errorMessages.lastname,
+        email: errorMessages.email,
+        password: errorMessages.password,
+      })
+    } else if (errorMessages.firstname.length > 0) {
+      setErrorMessages({
+        firstname: "",
         lastname: errorMessages.lastname,
         email: errorMessages.email,
         password: errorMessages.password,
@@ -163,52 +178,87 @@ const Redirect = ({
   }
 
   const handleLastName = (e) => {
-    if (e.target.value===""){
-    //  console.log("hi")
+    if (e.target.value === "") {
       setErrorMessages({
         firstname: errorMessages.firstname,
-        lastname: "last name can't be empty.",
+        lastname: "Last name can't be empty.",
         email: errorMessages.email,
         password: errorMessages.password,
-    })
+      })
+    } else if (errorMessages.lastname.length > 0) {
+      setErrorMessages({
+        firstname: errorMessages.firstname,
+        lastname: "",
+        email: errorMessages.email,
+        password: errorMessages.password,
+      })
     }
   }
 
   const handlePassword = (e) => {
-    if (e.target.value===""){
-      //console.log("hi")
+    if (e.target.value.length < 6) {
       setErrorMessages({
         firstname:errorMessages.firstname,
         lastname : errorMessages.lastname,
         email: errorMessages.email,
-        password: "password can't be empty.",
+        password: "Password must have minimum 6 characters.",
+      })
+    } else if (errorMessages.password.length >= 6) {
+      setErrorMessages({
+        firstname:errorMessages.firstname,
+        lastname : errorMessages.lastname,
+        email: errorMessages.email,
+        password: "",
       })
     }
   }
 
   const handleEmail = (e) => {
-    if (e.target.value===""){
-      //console.log("hi")
+    if (e.target.value === "") {
       setErrorMessages({
         firstname: errorMessages.firstname,
         lastname: errorMessages.lastname,
-        email: "email can't be empty.",
+        email: "Email can't be empty.",
+        password: errorMessages.password,
+      })
+    } else if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(e.target.value) === false) {
+      /*
+      Regex expression has been found here : https://www.w3resource.com/javascript/form/email-validation.php
+      */
+      setErrorMessages({
+        firstname: errorMessages.firstname,
+        lastname: errorMessages.lastname,
+        email: "Email is invalid.",
+        password: errorMessages.password,
+      })
+    } else if (errorMessages.email.length > 0) {
+      setErrorMessages({
+        firstname: errorMessages.firstname,
+        lastname: errorMessages.lastname,
+        email: "",
         password: errorMessages.password,
       })
     }
   }
 
   const handleSubmit = () => {
-    let firstname = document.getElementById("first-name").value
-    let lastname  = document.getElementById("last-name").value
-    let email     = document.getElementById("email").value
-    let password  = document.getElementById("password").value
+    let firstname = document.getElementById("first-name")
+    let lastname  = document.getElementById("last-name")
+    let email     = document.getElementById("email")
+    let password  = document.getElementById("password")
 
-    if (firstname.length === 0) {
-      setErrorMessages({firstname: "First name can't be empty."})
+    if (firstname.value.length > 0 &&
+         lastname.value.length > 0 &&
+         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email.value) === true &&
+         password.value.length > 6
+       ) {
+         setOpen(false)
+    } else {
+      handlePassword({target: password})
+      handleEmail({target: email})
+      handleLastName({target: lastname})
+      handleFirstName({target: firstname})
     }
-
-    // setOpen(false)
   }
 
   return (
@@ -232,6 +282,7 @@ const Redirect = ({
             color=""
             onChange={handleFirstName}
             error={errorMessages.firstname.length > 0 ? true : false}
+            helperText={errorMessages.firstname.length > 0 ? errorMessages.firstname : ""}
           />
           <CssTextField
             margin="dense"
@@ -241,6 +292,7 @@ const Redirect = ({
             variant="outlined"
             onChange={handleLastName}
             error={errorMessages.lastname.length > 0 ? true : false}
+            helperText={errorMessages.lastname.length > 0 ? errorMessages.lastname : ""}
           />
           <CssTextField
             margin="dense"
@@ -250,7 +302,8 @@ const Redirect = ({
             fullWidth
             variant="outlined"
             onChange={handleEmail}
-              error={errorMessages.email.length > 0 ? true : false}
+            error={errorMessages.email.length > 0 ? true : false}
+            helperText={errorMessages.email.length > 0 ? errorMessages.email : ""}
           />
           <CssTextField
             margin="dense"
@@ -261,6 +314,7 @@ const Redirect = ({
             variant="outlined"
             onChange={handlePassword}
             error={errorMessages.password.length > 0 ? true : false}
+            helperText={errorMessages.password.length > 0 ? errorMessages.password : ""}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
