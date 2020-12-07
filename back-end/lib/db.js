@@ -3,7 +3,7 @@ const {v4: uuid} = require('uuid')
 const {clone, merge} = require('mixme')
 const microtime = require('microtime')
 const level = require('level')
-const db = level(__dirname + '/../db')
+const db = level(__dirname + '/db')
 
 module.exports = {
   channels: {
