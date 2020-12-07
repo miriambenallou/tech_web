@@ -1,4 +1,6 @@
 import {useContext} from 'react'
+import qs from 'qs'
+import axios from 'axios'
 /** @jsx jsx */
 import { jsx } from '@emotion/core'
 // Layout
@@ -33,6 +35,12 @@ const useStyles = (theme) => ({
   },
 })
 
+const manageOauthConn = async (oauth) => {
+  axios.get("http:127.0.0.1:3001/users", {}).then((res) => {
+    console.log(res)
+  })
+}
+
 export default ({
   oauth
 }) => {
@@ -46,6 +54,22 @@ export default ({
   const isDrawerVisible = alwaysOpen || drawerVisible
 
   console.log(oauth);
+
+  if (oauth.userType === "oauth") {
+    console.log("go")
+    manageOauthConn(oauth)
+  }
+
+  // axios.post("http://127.0.0.1:3001/admin/reset", {})
+
+  // const {data} = axios.get("http://127.0.0.1:3001/users", {}).then((res) => {
+  //   console.log(res)
+  // }).catch((err) => {
+  //   console.log(err)
+  // })
+  // axios.post("http://127.0.0.1:3001/users", {
+  //   email: oauth.email
+  // })
 
   return (
     <main css={styles.root}>

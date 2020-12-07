@@ -24,6 +24,11 @@ app.get('/debug', async (req, res) => {
   res.json(arr)
 })
 
+app.post('/admin/reset', async (req, res) => {
+  await db.admin.clear()
+  res.json({})
+})
+
 // Channels
 
 // app.get('/channels', async (req, res) => {

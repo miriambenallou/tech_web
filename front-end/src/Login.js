@@ -361,6 +361,7 @@ const Tokens = ({
     e.stopPropagation()
     setOauth(null)
   }
+
   return (
     <div css={styles.root}>
       Welcome {email} <Link onClick={logout} color="secondary">logout</Link>
@@ -375,7 +376,7 @@ export default ({
   const history = useHistory();
   // const location = useLocation();
   const [cookies, setCookie, removeCookie] = useCookies([]);
-  const {oauth, setOauth} = useContext(Context)
+  const {oauth, setOauthC} = useContext(Context)
   const config = {
     authorization_endpoint: 'http://127.0.0.1:5556/dex/auth',
     token_endpoint: 'http://127.0.0.1:5556/dex/token',
@@ -386,8 +387,8 @@ export default ({
   const params = new URLSearchParams(window.location.search)
   const code = params.get('code')
   // is there a code query parameters in the url
-  if(!code){ // no: we are not being redirected from an oauth server
-    if(!oauth){
+  if (!code) { // no: we are not being redirected from an oauth server
+    if (!oauth) {
       const codeVerifier = base64URLEncode(crypto.randomBytes(32))
       setCookie('code_verifier', codeVerifier)
       return (
@@ -413,10 +414,10 @@ export default ({
             code: `${code}`,
           }))
           removeCookie('code_verifier')
-          setOauth(data)
+          setOauthC(data)
           // window.location = '/'
           history.push('/')
-        }catch (err) {
+        } catch (err) {
           console.error(err)
         }
       }
