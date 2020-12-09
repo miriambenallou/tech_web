@@ -40,7 +40,7 @@
   "scripts": {
     "reset": "bin/reset",
     "develop": "bin/init && bin/start",
-    "start": "node bin/start",
+    "start": "bin/start",
     "test": "mocha 'test/**/*.js'"
   }
 }

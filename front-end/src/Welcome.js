@@ -14,7 +14,11 @@ const useStyles = (theme) => ({
     height: '100%',
     flex: '1 1 auto',
     display: 'flex',
-    // background: 'rgba(0,0,0,.2)',
+    backgroundImage: 'url("background_tech_main.jpg")',
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center center",
+    backgroundAttachement: "fixed",
+    backgroundSize: "cover",
   },
   card: {
     textAlign: 'center',
@@ -28,7 +32,7 @@ const useStyles = (theme) => ({
 export default () => {
   const styles = useStyles(useTheme())
   return (
-    <div css={styles.root}>
+    <div id="icon_container" css={styles.root}>
       <Grid
         container
         direction="row"
