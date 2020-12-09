@@ -33,7 +33,7 @@ app.post('/admin/reset', async (req, res) => {
 
 // app.get('/channels', async (req, res) => {
 app.get('/channels', authenticate, async (req, res) => {
-  const channels = await db.channels.list()
+  const channels = await db.channels.list(req.query.email)
   res.json(channels)
 })
 
