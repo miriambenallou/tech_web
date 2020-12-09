@@ -34,6 +34,18 @@ export const Provider = ({
         }
         setOauth(oauth)
       },
+      setNoOauth: (user) => {
+        if (user) {
+          let o = {
+            email: user.email,
+            userType: "no-oauth"
+          }
+          setCookie('oauth', o)
+          setOauth(o)
+        } else {
+          console.log("ERREUR NO OAUTH USER NULL")
+        }
+      },
       channels: channels,
       drawerVisible: drawerVisible,
       setDrawerVisible: setDrawerVisible,
