@@ -79,9 +79,8 @@ export default ({
     let password  = document.getElementById("password")
 
     let pass =  base64URLEncode(sha256(password.value))
-   const {data} = await axios.get("http://127.0.0.1:3001/users/"+ email.value, {})
+   const {data} = await axios.get("http://127.0.0.1:3001/users/" + email.value, {})
 
-   console.log(data)
    if (data !== null) { // The user exists.
      if (data.password === pass) { // Password corresponds.
        setOpenUp(false)

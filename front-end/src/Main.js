@@ -37,7 +37,6 @@ const useStyles = (theme) => ({
 let manageOauthConn_lock = 0
 
 const manageOauthConn = async (oauth) => {
-  // const {data} = await axios.get("http://127.0.0.1:3001/users/" + oauth.email, {})
   if (manageOauthConn_lock > 1) return
 
   // Try to create an account with the email specified in oauth.
@@ -65,7 +64,7 @@ export default ({
     manageOauthConn_lock++
     oauth = manageOauthConn(oauth)
   }
-
+  
   return (
     <main css={styles.root}>
       <Drawer

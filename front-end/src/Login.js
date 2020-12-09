@@ -88,7 +88,6 @@ const Redirect = ({
     ].join('')
     window.location = url
   }
-  const [cookies, setCookie, removeCookie] = useCookies([]);
   const {setNoOauth} = useContext(Context)
 
   const [openUp, setOpenUp] = useState(false)
