@@ -11,6 +11,7 @@ import Link from '@material-ui/core/Link'
 import Context from './Context'
 
 import SignUpDialog from './SignUpDialog'
+import SignInDialog from './SignInDialog'
 
 import Button from '@material-ui/core/Button';
 import {
@@ -87,15 +88,22 @@ const Redirect = ({
     ].join('')
     window.location = url
   }
+  const [cookies, setCookie, removeCookie] = useCookies([]);
+  const {setNoOauth} = useContext(Context)
+
   const [openUp, setOpenUp] = useState(false)
+  const [openIn, setOpenIn] = useState(false)
+
 
   const signIn = () => {
-    // console.log(base64URLEncode(sha256("pierre")))
-    // console.log(base64URLEncode(sha256("herduin")))
-    // console.log(base64URLEncode(sha256("test")))
+    setOpenIn(true)
   }
   const signUp = () => {
     setOpenUp(true)
+  }
+
+  const noOauthRedirect = (user) => {
+    setNoOauth(user)
   }
 
   return (
@@ -120,6 +128,14 @@ const Redirect = ({
         setOpenUp={setOpenUp}
         sha256={sha256}
         base64URLEncode={base64URLEncode}
+      />
+
+      <SignInDialog
+        openUp={openIn}
+        setOpenUp={setOpenIn}
+        sha256={sha256}
+        base64URLEncode={base64URLEncode}
+        redirect={noOauthRedirect}
       />
 
     </div>
