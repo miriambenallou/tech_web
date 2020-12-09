@@ -92,6 +92,26 @@ module.exports = {
       const user = JSON.parse(data)
       return merge(user, {id: id})
     },
+    getByEmail: async (email) => {
+      if(!email) throw Error('Invalid email')
+
+      return new Promise( (resolve, reject) => {
+        db.createReadStream({
+          gt: "users:",
+          lte: "users" + String.fromCharCode(":".charCodeAt(0) + 1),
+        }).on('data', ({key, value}) => {
+          user = JSON.parse(value)
+          if (user.email === email) {
+            let id = key.split("users:")[1]
+            resolve(merge(user, {id: id}))
+          }
+        }).on( 'error', (err) => {
+          reject(err)
+        }).on('end', () => {
+          resolve(null)
+        })
+      })
+    },
     list: async () => {
       return new Promise( (resolve, reject) => {
         const users = []

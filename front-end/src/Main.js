@@ -1,5 +1,4 @@
-import {useContext} from 'react'
-import qs from 'qs'
+import {useContext, useState} from 'react'
 import axios from 'axios'
 /** @jsx jsx */
 import { jsx } from '@emotion/core'
@@ -35,9 +34,16 @@ const useStyles = (theme) => ({
   },
 })
 
+let manageOauthConn_lock = 0
+
 const manageOauthConn = async (oauth) => {
-  axios.get("http:127.0.0.1:3001/users", {}).then((res) => {
-    console.log(res)
+  // const {data} = await axios.get("http://127.0.0.1:3001/users/" + oauth.email, {})
+  if (manageOauthConn_lock > 1) return
+
+  // Try to create an account with the email specified in oauth.
+  // If the user already has an account, no account is created.
+  await axios.post("http://127.0.0.1:3001/users", {
+    email: oauth.email
   })
 }
 
@@ -53,23 +59,12 @@ export default ({
   const alwaysOpen = useMediaQuery(theme.breakpoints.up('sm'))
   const isDrawerVisible = alwaysOpen || drawerVisible
 
-  console.log(oauth);
+  // console.log(oauth);
 
   if (oauth.userType === "oauth") {
-    console.log("go")
-    manageOauthConn(oauth)
+    manageOauthConn_lock++
+    oauth = manageOauthConn(oauth)
   }
-
-  // axios.post("http://127.0.0.1:3001/admin/reset", {})
-
-  // const {data} = axios.get("http://127.0.0.1:3001/users", {}).then((res) => {
-  //   console.log(res)
-  // }).catch((err) => {
-  //   console.log(err)
-  // })
-  // axios.post("http://127.0.0.1:3001/users", {
-  //   email: oauth.email
-  // })
 
   return (
     <main css={styles.root}>

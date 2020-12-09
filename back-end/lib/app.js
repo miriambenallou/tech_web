@@ -72,12 +72,20 @@ app.get('/users', async (req, res) => {
 })
 
 app.post('/users', async (req, res) => {
-  const user = await db.users.create(req.body)
-  res.status(201).json(user)
+  const data = await db.users.getByEmail(req.body.email)
+  console.log("Trying to create new user...")
+  if (data == null) {
+    console.log("User created")
+    const user = await db.users.create(req.body)
+    res.status(201).json(user)
+  } else {
+    console.log("User already exist")
+    res.status(201).json(null)
+  }
 })
 
-app.get('/users/:id', async (req, res) => {
-  const user = await db.users.get(req.params.id)
+app.get('/users/:email', async (req, res) => {
+  const user = await db.users.getByEmail(req.params.email)
   res.json(user)
 })
 

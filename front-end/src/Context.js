@@ -1,7 +1,6 @@
 
 import React, {useState} from 'react'
 import { useCookies } from 'react-cookie'
-import axios from 'axios'
 
 const Context = React.createContext()
 
@@ -18,7 +17,7 @@ export const Provider = ({
   return (
     <Context.Provider value={{
       oauth: oauth,
-      setOauthC: (oauth) => {
+      setOauth: (oauth) => {
         if (oauth) {
           const payload = JSON.parse(
             Buffer.from(
@@ -27,7 +26,6 @@ export const Provider = ({
           )
           oauth.email = payload.email
           oauth.userType = "oauth"
-          axios.post("127.0.0.1:3001/admin/reset", {})
           setCookie('oauth', oauth)
         } else {
           setCurrentChannel(null)

@@ -376,7 +376,7 @@ export default ({
   const history = useHistory();
   // const location = useLocation();
   const [cookies, setCookie, removeCookie] = useCookies([]);
-  const {oauth, setOauthC} = useContext(Context)
+  const {oauth, setOauth} = useContext(Context)
   const config = {
     authorization_endpoint: 'http://127.0.0.1:5556/dex/auth',
     token_endpoint: 'http://127.0.0.1:5556/dex/token',
@@ -414,7 +414,7 @@ export default ({
             code: `${code}`,
           }))
           removeCookie('code_verifier')
-          setOauthC(data)
+          setOauth(data)
           // window.location = '/'
           history.push('/')
         } catch (err) {
