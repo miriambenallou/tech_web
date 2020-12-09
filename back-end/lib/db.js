@@ -81,7 +81,7 @@ module.exports = {
   },
   users: {
     create: async (user) => {
-      if(!user.username) throw Error('Invalid user')
+      if(!user.email) throw Error('Invalid user')
       const id = uuid()
       await db.put(`users:${id}`, JSON.stringify(user))
       return merge(user, {id: id})
@@ -91,6 +91,26 @@ module.exports = {
       const data = await db.get(`users:${id}`)
       const user = JSON.parse(data)
       return merge(user, {id: id})
+    },
+    getByEmail: async (email) => {
+      if(!email) throw Error('Invalid email')
+
+      return new Promise( (resolve, reject) => {
+        db.createReadStream({
+          gt: "users:",
+          lte: "users" + String.fromCharCode(":".charCodeAt(0) + 1),
+        }).on('data', ({key, value}) => {
+          user = JSON.parse(value)
+          if (user.email === email) {
+            let id = key.split("users:")[1]
+            resolve(merge(user, {id: id}))
+          }
+        }).on( 'error', (err) => {
+          reject(err)
+        }).on('end', () => {
+          resolve(null)
+        })
+      })
     },
     list: async () => {
       return new Promise( (resolve, reject) => {
@@ -114,10 +134,25 @@ module.exports = {
       if(!original) throw Error('Unregistered user id')
       store.users[id] = merge(original, user)
     },
-    delete: (id, user) => {
-      const original = store.users[id]
-      if(!original) throw Error('Unregistered user id')
-      delete store.users[id]
+    delete: (email) => {
+      return new Promise( (resolve, reject) => {
+        db.createReadStream({
+          gt: "users:",
+          lte: "users" + String.fromCharCode(":".charCodeAt(0) + 1),
+        }).on('data', ({key, value}) => {
+          user = JSON.parse(value)
+          if (user.email === email) {
+            let id = key.split("users:")[1]
+            // const data = db.delete(`users:${id}`)
+            const data = db.put(`users:${id}`, JSON.stringify({}))
+            resolve(data)
+          }
+        }).on('error', (err) => {
+          reject(err)
+        }).on('end', () => {
+          resolve(null)
+        })
+      })
     }
   },
   admin: {

@@ -1,4 +1,5 @@
 import {useContext} from 'react'
+import axios from 'axios'
 /** @jsx jsx */
 import { jsx } from '@emotion/core'
 // Layout
@@ -33,6 +34,19 @@ const useStyles = (theme) => ({
   },
 })
 
+let manageOauthConn_lock = 0
+
+const manageOauthConn = async (oauth) => {
+  // const {data} = await axios.get("http://127.0.0.1:3001/users/" + oauth.email, {})
+  if (manageOauthConn_lock > 1) return
+
+  // Try to create an account with the email specified in oauth.
+  // If the user already has an account, no account is created.
+  await axios.post("http://127.0.0.1:3001/users", {
+    email: oauth.email
+  })
+}
+
 export default ({
   oauth
 }) => {
@@ -45,7 +59,12 @@ export default ({
   const alwaysOpen = useMediaQuery(theme.breakpoints.up('sm'))
   const isDrawerVisible = alwaysOpen || drawerVisible
 
-  console.log(oauth);
+  // console.log(oauth);
+
+  if (oauth.userType === "oauth") {
+    manageOauthConn_lock++
+    oauth = manageOauthConn(oauth)
+  }
 
   return (
     <main css={styles.root}>

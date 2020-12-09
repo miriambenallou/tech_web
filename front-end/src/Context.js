@@ -18,15 +18,16 @@ export const Provider = ({
     <Context.Provider value={{
       oauth: oauth,
       setOauth: (oauth) => {
-        if(oauth){
+        if (oauth) {
           const payload = JSON.parse(
             Buffer.from(
               oauth.id_token.split('.')[1], 'base64'
             ).toString('utf-8')
           )
           oauth.email = payload.email
+          oauth.userType = "oauth"
           setCookie('oauth', oauth)
-        }else{
+        } else {
           setCurrentChannel(null)
           setChannels([])
           removeCookie('oauth')
