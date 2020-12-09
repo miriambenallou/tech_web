@@ -2,6 +2,9 @@
 import { useContext } from 'react'
 /** @jsx jsx */
 import { jsx } from '@emotion/core'
+
+import {useHistory} from 'react-router-dom'
+
 // Layout
 import { useTheme } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
@@ -90,6 +93,8 @@ export default ({
     oauth, setOauth,
     drawerVisible, setDrawerVisible
   } = useContext(Context)
+  const history = useHistory();
+
   const drawerToggle = (e) => {
     setDrawerVisible(!drawerVisible)
   }
@@ -97,52 +102,54 @@ export default ({
     e.stopPropagation()
     setOauth(null)
   }
+  const goHome = () => {
+    history.push('/channels')
+    // window.location = "/channels"
+  }
   return (
     <header css={styles.header}>
-    <IconButton
-       color="inherit"
-       aria-label="open drawer"
-       onClick={drawerToggle}
-       css={styles.menu}
-     >
-       <MenuIcon />
-     </IconButton>
-    <div class={oauth ? "container" : "container-nooauth"}>
-      <div id="container_home">
+      <IconButton
+         color="inherit"
+         aria-label="open drawer"
+         onClick={drawerToggle}
+         css={styles.menu}
+       >
+         <MenuIcon />
+       </IconButton>
+      <div class={oauth ? "container" : "container-nooauth"}>
+        <div id="container_home">
 
-            {
-            oauth ?   <div>  <HomeIcon id="home"></HomeIcon></div> : ""
-            }
+              {
+              oauth ?   <div>  <HomeIcon id="home" onClick={goHome}></HomeIcon></div> : ""
+              }
 
-           <div id="chat"> ECE Chat </div>
-      </div>
-      {
-        oauth ?
-          <div>
-            <span>
-               {oauth.email}
-            </span>
-          </div>
-
-        :
-          <div> </div>
-      }
-
-      {
-        oauth ?
-        <div>
-            <ExitToAppIcon id="logout" onClick={onClickLogout}>
-            </ExitToAppIcon>
-            <Typography id="typo" color="textPrimary">
-                 Log out
-             </Typography>
+             <div id="chat"> ECE Chat </div>
         </div>
-        :
-        <div> </div>
-      }
-   </div>
+        {
+          oauth ?
+            <div>
+              <span>
+                 {oauth.email}
+              </span>
+            </div>
 
+          :
+            <div> </div>
+        }
 
-    </header>
+        {
+          oauth ?
+          <div>
+              <ExitToAppIcon id="logout" onClick={onClickLogout}>
+              </ExitToAppIcon>
+              <Typography id="typo" color="textPrimary">
+                   Log out
+               </Typography>
+          </div>
+          :
+          <div> </div>
+        }
+     </div>
+   </header>
   );
 }

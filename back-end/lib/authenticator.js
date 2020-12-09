@@ -17,6 +17,7 @@ module.exports = ({jwks_uri} = {}) => {
   if(!jwks_uri){
     throw Error('Invalid Settings: jwks_uri is required')
   }
+  console.log(jwks_uri)
   return async (req, res, next) => {
     if(! req.headers['authorization'] ){
       res.status(401).send('Missing Access Token')

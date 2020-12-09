@@ -43,7 +43,7 @@ export const Provider = ({
           setCookie('oauth', o)
           setOauth(o)
         } else {
-          console.log("ERREUR NO OAUTH USER NULL")
+          console.log("ERROR NO OAUTH USER NULL")
         }
       },
       channels: channels,

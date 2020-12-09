@@ -14,7 +14,7 @@ const styles = {
   // },
   channel: {
     padding: '.2rem .5rem',
-    whiteSpace: 'nowrap', 
+    whiteSpace: 'nowrap',
   }
 }
 
@@ -27,11 +27,17 @@ export default () => {
   useEffect( () => {
     const fetch = async () => {
       try{
+        console.log("BEGIN")
+        // const data = await axios.get('http://localhost:3001/channels', {
         const {data: channels} = await axios.get('http://localhost:3001/channels', {
           headers: {
             'Authorization': `Bearer ${oauth.access_token}`
+          },
+          params: {
+            email: oauth.email
           }
         })
+        console.log(channels)
         setChannels(channels)
       }catch(err){
         console.error(err)
@@ -42,6 +48,7 @@ export default () => {
   return (
     <ul style={styles.root}>
       { channels.map( (channel, i) => (
+
         <li key={i} css={styles.channel}>
           <Link
             href={`/channels/${channel.id}`}

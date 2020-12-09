@@ -63,7 +63,11 @@ const config = {
       Consider adding syntax highlight support with a library like
       [Prism](https://prismjs.com/).
       `.replace(/^ {6}/gm,'').replace(/^ {6}/gm,''),
-    }]
+    }],
+    members: [
+      "herduinpierre@yahoo.com"
+    ],
+    creator: "herduinpierre@yahoo.com"
   },{
     name: 'Channel 2',
     messages: [{
@@ -78,7 +82,11 @@ const config = {
       content: `
       Pong
       `.replace(/^ {6}/gm,'')
-    }]
+    }],
+    members: [
+      "pierre@yahoo.com"
+    ],
+    creator: "pierre@yahoo.com"
   },{
     name: 'Channel 3',
     messages: [{
@@ -93,10 +101,17 @@ const config = {
       content: `
       42
       `.replace(/^ {6}/gm,'')
-    }]
+    }],
+    members: [
+      "herduinpierre@yahoo.com",
+      "pierre@yahoo.com"
+    ],
+    creator: "herduinpierre@yahoo.com"
   }].map( async (channel) => {
     const {data: {id}} = await axios.post(`http://localhost:${config.port}/channels`, {
-      name: channel.name
+      name: channel.name,
+      members: channel.members,
+      creator: channel.creator
     })
     return Promise.all( channel.messages.map( async (message) => {
       await axios.post(`http://localhost:${config.port}/channels/${id}/messages`, message)
