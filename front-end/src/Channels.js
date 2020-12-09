@@ -8,13 +8,36 @@ import Link from '@material-ui/core/Link'
 import Context from './Context'
 import {useHistory} from 'react-router-dom'
 
+import ChannelButton from './ChannelButton'
+
 const styles = {
-  // root: {
-  //   minWidth: '200px',
-  // },
+  root: {
+    minWidth: '200px',
+  },
   channel: {
     padding: '.2rem .5rem',
     whiteSpace: 'nowrap',
+    alignSelf: 'center',
+    color: 'black',
+    cursor: 'default'
+  },
+  channelDiv: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    backgroundColor: 'white',
+    padding: "5% 0",
+    border: 'solid black',
+  },
+  // container: {
+  //   display : 'flex',
+  //   flexWrap: 'nowrap',
+  //   alignItems: 'stretch',
+  //   flex: '1 1 70%'
+  // },
+  button: {
+    '&.MuiIconButton-root': {
+      color: 'black'
+    }
   }
 }
 
@@ -48,18 +71,12 @@ export default () => {
   return (
     <ul style={styles.root}>
       { channels.map( (channel, i) => (
-
-        <li key={i} css={styles.channel}>
-          <Link
-            href={`/channels/${channel.id}`}
-            onClick={ (e) => {
-              e.preventDefault()
-              history.push(`/channels/${channel.id}`)
-            }}
-          >
-            {channel.name}
-          </Link>
-        </li>
+        <ChannelButton
+          channel={channel}
+          styles={styles}
+          history={history}
+          i={i}
+        />
       ))}
     </ul>
   );
