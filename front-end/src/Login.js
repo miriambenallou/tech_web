@@ -10,27 +10,11 @@ import Link from '@material-ui/core/Link'
 // Local
 import Context from './Context'
 
+import SignUpDialog from './SignUpDialog'
+
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import IconButton from '@material-ui/core/IconButton';
-import Input from '@material-ui/core/Input';
-import FilledInput from '@material-ui/core/FilledInput';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import InputLabel from '@material-ui/core/InputLabel';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import {
-  ThemeProvider,
   useTheme,
-  withTheme,
-  withStyles,
-  createMuiTheme
 } from '@material-ui/core/styles';
 
 import {
@@ -78,41 +62,11 @@ const useStyles = (theme) => ({
     backgroundSize: "cover",
   },
   button: {
+    display: "inline",
     margin: "50px 50px 50px 50px",
     padding: "20px 50px 20px 50px",
   }
 })
-
-const CssTextField = withStyles({
-  root: {
-    '& .Mui-error': {
-      color: '#f44336'
-    },
-    '& .MuiFormLabel-root.Mui-error': {
-      color: '#f44336'
-    },
-    '& label.Mui-focused': {
-      color: 'green'
-    },
-    '& .MuiInput-underline:after': {
-      borderBottomColor: 'green',
-    },
-    '& .MuiOutlinedInput-root': {
-      '&.Mui-error .MuiOutlinedInput-notchedOutline': {
-        borderColor: '#f44336'
-      },
-      '& fieldset': {
-        borderColor: 'grey',
-      },
-      '&:hover fieldset': {
-        borderColor: 'white',
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: 'green',
-      },
-    }
-  },
-})(TextField)
 
 const Redirect = ({
   config,
@@ -133,217 +87,40 @@ const Redirect = ({
     ].join('')
     window.location = url
   }
-  const [open, setOpen] = useState(false)
-  const [passwordVisible, setPasswordVisible] = useState(false)
-  const [errorMessages, setErrorMessages] = useState({
-    firstname: "",
-    lastname: "",
-    email: "",
-    password: "",
-  })
+  const [openUp, setOpenUp] = useState(false)
 
-
+  const signIn = () => {
+    // console.log(base64URLEncode(sha256("pierre")))
+    // console.log(base64URLEncode(sha256("herduin")))
+    // console.log(base64URLEncode(sha256("test")))
+  }
   const signUp = () => {
-    setOpen(true)
-  }
-  const handleClose = () => {
-    setOpen(false)
-    setErrorMessages({
-      firstname: "",
-      lastname: "",
-      email: "",
-      password: "",
-    })
-  }
-  const handleShowPassword = () => {
-    setPasswordVisible(!passwordVisible)
-  }
-
-  const handleFirstName = (e) => {
-    if (e.target.value === "") {
-      setErrorMessages({
-        firstname: "First name can't be empty.",
-        lastname: errorMessages.lastname,
-        email: errorMessages.email,
-        password: errorMessages.password,
-      })
-    } else if (errorMessages.firstname.length > 0) {
-      setErrorMessages({
-        firstname: "",
-        lastname: errorMessages.lastname,
-        email: errorMessages.email,
-        password: errorMessages.password,
-      })
-    }
-  }
-
-  const handleLastName = (e) => {
-    if (e.target.value === "") {
-      setErrorMessages({
-        firstname: errorMessages.firstname,
-        lastname: "Last name can't be empty.",
-        email: errorMessages.email,
-        password: errorMessages.password,
-      })
-    } else if (errorMessages.lastname.length > 0) {
-      setErrorMessages({
-        firstname: errorMessages.firstname,
-        lastname: "",
-        email: errorMessages.email,
-        password: errorMessages.password,
-      })
-    }
-  }
-
-  const handlePassword = (e) => {
-    if (e.target.value.length < 6) {
-      setErrorMessages({
-        firstname:errorMessages.firstname,
-        lastname : errorMessages.lastname,
-        email: errorMessages.email,
-        password: "Password must have minimum 6 characters.",
-      })
-    } else if (errorMessages.password.length >= 6) {
-      setErrorMessages({
-        firstname:errorMessages.firstname,
-        lastname : errorMessages.lastname,
-        email: errorMessages.email,
-        password: "",
-      })
-    }
-  }
-
-  const handleEmail = (e) => {
-    if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(e.target.value) === false) {
-      /*
-      Regex expression has been found here : https://www.w3resource.com/javascript/form/email-validation.php
-      */
-      setErrorMessages({
-        firstname: errorMessages.firstname,
-        lastname: errorMessages.lastname,
-        email: "Email is invalid.",
-        password: errorMessages.password,
-      })
-    } else if (errorMessages.email.length > 0) {
-      setErrorMessages({
-        firstname: errorMessages.firstname,
-        lastname: errorMessages.lastname,
-        email: "",
-        password: errorMessages.password,
-      })
-    }
-  }
-
-  const handleSubmit = () => {
-    let firstname = document.getElementById("first-name")
-    let lastname  = document.getElementById("last-name")
-    let email     = document.getElementById("email")
-    let password  = document.getElementById("password")
-
-    if (firstname.value.length > 0 &&
-         lastname.value.length > 0 &&
-         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email.value) === true &&
-         password.value.length > 6
-       ) {
-         setOpen(false)
-    } else {
-      let ferr = "", lerr = "", eerr = "", perr = ""
-
-      if (firstname.value.length === 0) {
-        ferr = "First name can't be empty."
-      }
-      if (lastname.value.length === 0) {
-        lerr = "Last name can't be empty."
-      }
-      if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email.value) === false) {
-        eerr = "Email is invalid."
-      }
-      if (password.value.length < 6) {
-        perr = "Password must have minimum 6 characters."
-      }
-      setErrorMessages({
-        firstname: ferr,
-        lastname:  lerr,
-        email:     eerr,
-        password:  perr
-      })
-    }
+    setOpenUp(true)
   }
 
   return (
     <div css={styles.root}>
 
-      <Button variant="contained" style={styles.button} onClick={redirect}>Sign in</Button>
+      <Button variant="contained" style={styles.button} onClick={redirect}>
+        <div>Sign in</div>
+        <div style={{
+          fontSize: "10px"
+        }}>with Oauth</div>
+      </Button>
       <Button variant="contained" style={styles.button} onClick={signUp}>Sign up</Button>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        style={{borderRadius:'100px'}}
-      >
-        <DialogTitle id="dialog-title">Sign up</DialogTitle>
-        <DialogContent>
-          <CssTextField
-            margin="dense"
-            id="first-name"
-            label="First name"
-            type="text"
-            variant="outlined"
-            color=""
-            onChange={handleFirstName}
-            error={errorMessages.firstname.length > 0 ? true : false}
-            helperText={errorMessages.firstname.length > 0 ? errorMessages.firstname : ""}
-          />
-          <CssTextField
-            margin="dense"
-            id="last-name"
-            label="Last name"
-            type="text"
-            variant="outlined"
-            onChange={handleLastName}
-            error={errorMessages.lastname.length > 0 ? true : false}
-            helperText={errorMessages.lastname.length > 0 ? errorMessages.lastname : ""}
-          />
-          <CssTextField
-            margin="dense"
-            id="email"
-            label="e-mail address"
-            type="email"
-            fullWidth
-            variant="outlined"
-            onChange={handleEmail}
-            error={errorMessages.email.length > 0 ? true : false}
-            helperText={errorMessages.email.length > 0 ? errorMessages.email : ""}
-          />
-          <CssTextField
-            margin="dense"
-            id="password"
-            label="Password"
-            type={passwordVisible ? "text" : "password"}
-            fullWidth
-            variant="outlined"
-            onChange={handlePassword}
-            error={errorMessages.password.length > 0 ? true : false}
-            helperText={errorMessages.password.length > 0 ? errorMessages.password : ""}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleShowPassword}
-                    edge="end"
-                  >
-                    {passwordVisible ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button variant="contained" onClick={handleClose} color="secondary">Cancel</Button>
-          <Button variant="contained" onClick={handleSubmit} color="primary">Sign up</Button>
-        </DialogActions>
-      </Dialog>
+      <Button variant="contained" style={styles.button} onClick={signIn}>
+        <div>Sign in</div>
+        <div style={{
+          fontSize: "10px"
+        }}>no Oauth</div>
+      </Button>
+
+      <SignUpDialog
+        openUp={openUp}
+        setOpenUp={setOpenUp}
+        sha256={sha256}
+        base64URLEncode={base64URLEncode}
+      />
 
     </div>
   )

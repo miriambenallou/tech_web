@@ -134,10 +134,25 @@ module.exports = {
       if(!original) throw Error('Unregistered user id')
       store.users[id] = merge(original, user)
     },
-    delete: (id, user) => {
-      const original = store.users[id]
-      if(!original) throw Error('Unregistered user id')
-      delete store.users[id]
+    delete: (email) => {
+      return new Promise( (resolve, reject) => {
+        db.createReadStream({
+          gt: "users:",
+          lte: "users" + String.fromCharCode(":".charCodeAt(0) + 1),
+        }).on('data', ({key, value}) => {
+          user = JSON.parse(value)
+          if (user.email === email) {
+            let id = key.split("users:")[1]
+            // const data = db.delete(`users:${id}`)
+            const data = db.put(`users:${id}`, JSON.stringify({}))
+            resolve(data)
+          }
+        }).on('error', (err) => {
+          reject(err)
+        }).on('end', () => {
+          resolve(null)
+        })
+      })
     }
   },
   admin: {

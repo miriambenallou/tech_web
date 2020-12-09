@@ -74,6 +74,7 @@ app.get('/users', async (req, res) => {
 app.post('/users', async (req, res) => {
   const data = await db.users.getByEmail(req.body.email)
   console.log("Trying to create new user...")
+  console.log("Email :", req.body.email)
   if (data == null) {
     console.log("User created")
     const user = await db.users.create(req.body)
@@ -93,5 +94,10 @@ app.put('/users/:id', async (req, res) => {
   const user = await db.users.update(req.body)
   res.json(user)
 })
+
+// app.delete('/users/:email', async (req, res) => {
+//   console.log("Try to delete :", req.params.email)
+//   const data = await db.users.delete(req.params.email)
+// })
 
 module.exports = app
