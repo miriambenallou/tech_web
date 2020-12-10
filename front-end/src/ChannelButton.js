@@ -11,12 +11,22 @@ export default ({
   channel,
   styles,
   history,
-  i
+  i,
+  setDialog
 }) => {
+  const handleClickBtn = () => {
+    setDialog({
+      channelId: channel.id,
+      creator: channel.creator,
+      open: true,
+      name: channel.name,
+      members: channel.members
+    })
+  }
   return (
       <div
         style={styles.channelDiv}
-        onClick= {(e) => {
+        onClick={ (e) => {
           if (/.*SVGAnimatedString.*/.test(e.target.className))
             return
           e.preventDefault()
@@ -27,7 +37,7 @@ export default ({
           {channel.name}
         </div>
         <div>
-          <IconButton onClick={()=>{}}
+          <IconButton onClick={handleClickBtn}
           css={styles.button}
           >
           <TuneIcon />

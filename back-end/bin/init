@@ -9,7 +9,6 @@ const config = {
 (async function() {
   await app.listen(config.port);
   await Promise.all([{
-    name: 'Channel 1',
     messages: [{
       author: 'miriam',
       creation: 1602831101929,
@@ -67,9 +66,9 @@ const config = {
     members: [
       "herduinpierre@yahoo.com"
     ],
-    creator: "herduinpierre@yahoo.com"
+    creator: "herduinpierre@yahoo.com",
+    name: "Courses"
   },{
-    name: 'Channel 2',
     messages: [{
       author: 'miriam',
       creation: 1602223579200,
@@ -86,9 +85,9 @@ const config = {
     members: [
       "pierre@yahoo.com"
     ],
-    creator: "pierre@yahoo.com"
+    creator: "pierre@yahoo.com",
+    name: "Solo"
   },{
-    name: 'Channel 3',
     messages: [{
       author: 'miriam',
       creation: 1602223579200,
@@ -106,7 +105,8 @@ const config = {
       "herduinpierre@yahoo.com",
       "pierre@yahoo.com"
     ],
-    creator: "herduinpierre@yahoo.com"
+    creator: "pierre@yahoo.com",
+    name: "Our little group"
   }].map( async (channel) => {
     const {data: {id}} = await axios.post(`http://localhost:${config.port}/channels`, {
       name: channel.name,

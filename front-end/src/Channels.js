@@ -1,4 +1,4 @@
-import {useContext, useEffect} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import axios from 'axios';
 /** @jsx jsx */
 import { jsx } from '@emotion/core'
@@ -9,6 +9,7 @@ import Context from './Context'
 import {useHistory} from 'react-router-dom'
 
 import ChannelButton from './ChannelButton'
+import ChannelSettingsDialog from './ChannelSettingsDialog'
 
 const styles = {
   root: {
@@ -47,10 +48,13 @@ export default () => {
     channels, setChannels
   } = useContext(Context)
   const history = useHistory();
+  const [dialog, setDialog] = useState({
+    open: false
+  })
+  console.log("BEGIN")
   useEffect( () => {
     const fetch = async () => {
       try{
-        console.log("BEGIN")
         // const data = await axios.get('http://localhost:3001/channels', {
         const {data: channels} = await axios.get('http://localhost:3001/channels', {
           headers: {
@@ -69,15 +73,23 @@ export default () => {
     fetch()
   }, [oauth, setChannels])
   return (
-    <ul style={styles.root}>
-      { channels.map( (channel, i) => (
-        <ChannelButton
-          channel={channel}
-          styles={styles}
-          history={history}
-          i={i}
-        />
-      ))}
-    </ul>
+    <div>
+      <ul style={styles.root}>
+        { channels.map( (channel, i) => (
+          <ChannelButton
+            channel={channel}
+            styles={styles}
+            history={history}
+            i={i}
+            setDialog={setDialog}
+          />
+        ))}
+      </ul>
+      <ChannelSettingsDialog
+        dialog={dialog}
+        setDialog={setDialog}
+        oauth={oauth}
+      />
+    </div>
   );
 }
