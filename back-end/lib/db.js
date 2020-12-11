@@ -20,6 +20,7 @@ module.exports = {
       return merge(channel, {id: id})
     },
     list: async (email) => {
+      if (!email) throw Error('Invalid email')
       return new Promise( (resolve, reject) => {
         const channels = []
         db.createReadStream({
@@ -28,7 +29,7 @@ module.exports = {
         }).on( 'data', ({key, value}) => {
           channel = JSON.parse(value)
           channel.id = key.split(':')[1]
-          
+
           if (channel.members.includes(email))
             channels.push(channel)
         }).on( 'error', (err) => {
@@ -38,10 +39,16 @@ module.exports = {
         })
       })
     },
-    update: (id, channel) => {
-      const original = store.channels[id]
+    update: async (id, channel) => {
+      const original = await db.get(`channels:${id}`)
       if(!original) throw Error('Unregistered channel id')
-      store.channels[id] = merge(original, channel)
+      await db.del(`channels:${id}`)
+      const data = await db.put(`channels:${id}`, JSON.stringify({
+        name: channel.name,
+        creator: channel.creator,
+        members: channel.members
+      }))
+      return data
     },
     delete: (id, channel) => {
       const original = store.channels[id]
@@ -131,10 +138,19 @@ module.exports = {
         })
       })
     },
-    update: (id, user) => {
-      const original = store.users[id]
-      if(!original) throw Error('Unregistered user id')
-      store.users[id] = merge(original, user)
+    update: async (user, token) => {
+      const original = await db.get(`users:${user.id}`)
+      if (!original) throw Error("Invalid user id !")
+
+      await db.del(`users:${user.id}`)
+
+      let data
+      if (token) {
+        data = await db.put(`users:${user.id}`, JSON.stringify(merge(user, {access_token: token})))
+      } else {
+        data = await db.put(`users:${user.id}`, JSON.stringify(user))
+      }
+      return data
     },
     delete: (email) => {
       return new Promise( (resolve, reject) => {

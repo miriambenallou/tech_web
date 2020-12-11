@@ -83,8 +83,15 @@ export default ({
 
    if (data !== null) { // The user exists.
      if (data.password === pass) { // Password corresponds.
+       // Generating a new access_token for this user.
+       await axios.put("http://127.0.0.1:3001/users/" + email.value, {
+         generate_token: true,
+         user: data
+       })
+       const dt = await axios.get("http://127.0.0.1:3001/users/" + email.value)
        setOpenUp(false)
-       redirect(data)
+       redirect(dt.data)
+
      } else { // Password incorrect.
        setErrorMessages({
          email: "",
@@ -105,7 +112,7 @@ export default ({
       onClose={handleClose}
       style={{borderRadius:'100px'}}
     >
-      <DialogTitle id="dialog-title">Sign up</DialogTitle>
+      <DialogTitle id="dialog-title">Sign in</DialogTitle>
       <DialogContent>
         <CssTextField
           margin="dense"
@@ -143,7 +150,7 @@ export default ({
       </DialogContent>
       <DialogActions>
         <Button variant="contained" onClick={handleClose} color="secondary">Cancel</Button>
-        <Button variant="contained" onClick={handleSubmit} color="primary">Sign up</Button>
+        <Button variant="contained" onClick={handleSubmit} color="primary">Sign in</Button>
       </DialogActions>
     </Dialog>
   )
