@@ -1,6 +1,7 @@
 
 const jwksClient = require('jwks-rsa')
 const jwt = require('jsonwebtoken')
+const db = require('./db')
 
 const fetchKeyFromOpenIDServer = async (jwks_uri, token) => {
   const header = JSON.parse( Buffer.from(
@@ -24,19 +25,34 @@ module.exports = ({jwks_uri} = {}) => {
       return
     }
     const header = req.headers['authorization']
+    const nooauth = req.headers['no-oauth']
     const [type, access_token] = header.split(' ')
     if(type !== 'Bearer'){
       res.status(401).send('Authorization Not Bearer')
       return
     }
-    const key = await fetchKeyFromOpenIDServer(jwks_uri, access_token)
-    // Validate the payload
-    try{
-      const payload = jwt.verify(access_token, key)
-      req.user = payload
-      next()
-    }catch(err){
-      res.status(401).send('Invalid Access Token')
+
+    if (!nooauth) { // With oauth.
+      const key = await fetchKeyFromOpenIDServer(jwks_uri, access_token)
+      // Validate the payload
+      try{
+        const payload = jwt.verify(access_token, key)
+        req.user = payload
+        next()
+      }catch(err){
+        res.status(401).send('Invalid Access Token')
+      }
+    } else { // No oauth.
+      const usr = await db.users.getByEmail(req.query.email)
+
+      if (usr.access_token === access_token) {
+        // req.user = usr
+        next()
+      } else {
+        res.status(401).send('Invalid Access Token -- no-oauth')
+      }
+
+      // const token = await db.user.getToken()
     }
   }
 }

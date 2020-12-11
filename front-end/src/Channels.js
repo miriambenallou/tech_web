@@ -56,9 +56,11 @@ export default () => {
     const fetch = async () => {
       try{
         // const data = await axios.get('http://localhost:3001/channels', {
+        console.log(oauth.access_token)
         const {data: channels} = await axios.get('http://localhost:3001/channels', {
           headers: {
-            'Authorization': `Bearer ${oauth.access_token}`
+            'Authorization': `Bearer ${oauth.access_token}`,
+            'no-oauth': true
           },
           params: {
             email: oauth.email

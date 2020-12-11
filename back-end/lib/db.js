@@ -40,7 +40,6 @@ module.exports = {
       })
     },
     update: async (id, channel) => {
-      console.log("UPDATE :", id, channel)
       const original = await db.get(`channels:${id}`)
       if(!original) throw Error('Unregistered channel id')
       await db.del(`channels:${id}`)
@@ -139,10 +138,19 @@ module.exports = {
         })
       })
     },
-    update: (id, user) => {
-      const original = store.users[id]
-      if(!original) throw Error('Unregistered user id')
-      store.users[id] = merge(original, user)
+    update: async (user, token) => {
+      const original = await db.get(`users:${user.id}`)
+      if (!original) throw Error("Invalid user id !")
+
+      await db.del(`users:${user.id}`)
+
+      let data
+      if (token) {
+        data = await db.put(`users:${user.id}`, JSON.stringify(merge(user, {access_token: token})))
+      } else {
+        data = await db.put(`users:${user.id}`, JSON.stringify(user))
+      }
+      return data
     },
     delete: (email) => {
       return new Promise( (resolve, reject) => {

@@ -1,7 +1,8 @@
-
+const {v4: uuid} = require('uuid')
 const db = require('./db')
 const express = require('express')
 const cors = require('cors')
+const {merge} = require('mixme')
 const authenticator = require('./authenticator')
 
 const app = express()
@@ -90,9 +91,15 @@ app.get('/users/:email', async (req, res) => {
   res.json(user)
 })
 
-app.put('/users/:id', async (req, res) => {
-  const user = await db.users.update(req.body)
-  res.json(user)
+app.put('/users/:email', async (req, res) => {
+  if (req.body.generate_token === true) { // Must generate a token for the user.
+    const token = uuid() + '-' + uuid()
+    const dt = await db.users.update(req.body.user, token)
+    res.status(201).json(dt)
+  } else { // Just edit the user.
+    const dt = await db.users.update(req.body.user)
+    res.status(201).json(dt)
+  }
 })
 
 // app.delete('/users/:email', async (req, res) => {
