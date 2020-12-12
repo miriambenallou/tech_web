@@ -2,6 +2,8 @@ import { useState } from 'react'
 import axios from 'axios';
 /** @jsx jsx */
 import { jsx } from '@emotion/core'
+
+import dayjs from 'dayjs'
 // Layout
 import Button from "@material-ui/core/Button"
 // import Icon from "@material-ui/core/Icon"
@@ -32,6 +34,7 @@ const useStyles = (theme) => {
 export default ({
   addMessage,
   channel,
+  oauth,
 }) => {
   const [content, setContent] = useState('')
   const styles = useStyles(useTheme())
@@ -40,7 +43,9 @@ export default ({
       `http://localhost:3001/channels/${channel.id}/messages`
     , {
       content: content,
-      author: 'david',
+      author: oauth.email,
+      name: oauth.firstname + ' ' + oauth.lastname,
+      creation: dayjs().valueOf()
     })
     addMessage(message)
     setContent('')

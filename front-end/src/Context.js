@@ -39,7 +39,9 @@ export const Provider = ({
           let o = {
             email: user.email,
             userType: "no-oauth",
-            access_token: user.access_token
+            access_token: user.access_token,
+            firstname: user.firstname,
+            lastname: user.lastname
           }
           setCookie('oauth', o)
           setOauth(o)

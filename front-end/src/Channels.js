@@ -51,7 +51,6 @@ export default () => {
   const [dialog, setDialog] = useState({
     open: false
   })
-  console.log("BEGIN")
   useEffect( () => {
     const fetch = async () => {
       try{
@@ -66,7 +65,6 @@ export default () => {
             email: oauth.email
           }
         })
-        console.log(channels)
         setChannels(channels)
       }catch(err){
         console.error(err)

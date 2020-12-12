@@ -18,8 +18,11 @@ const useStyles = (theme) => ({
     flex: '1 1 auto',
     display: 'flex',
     flexDirection: 'column',
+  },
+  messages: {
     position: 'relative',
     overflowX: 'auto',
+    height: '100%',
   },
   fab: {
     position: 'absolute !important',
@@ -34,10 +37,10 @@ const useStyles = (theme) => ({
 export default () => {
   const history = useHistory()
   const { id } = useParams()
-  const {channels} = useContext(Context)
+  const {channels, oauth} = useContext(Context)
   const channel = channels.find( channel => channel.id === id)
   if(!channel) {
-    history.push('/oups')
+    history.push('/channels')
     return <div/>
   }
   const styles = useStyles(useTheme())
@@ -68,21 +71,28 @@ export default () => {
   }
   return (
     <div css={styles.root}>
-      <List
-        channel={channel}
-        messages={messages}
-        onScrollDown={onScrollDown}
-        ref={listRef}
-      />
-      <Form addMessage={addMessage} channel={channel} />
-      <Fab
-        color="primary"
-        aria-label="Latest messages"
-        css={[styles.fab, scrollDown || styles.fabDisabled]}
-        onClick={onClickScroll}
-      >
-        <ArrowDropDownIcon />
-      </Fab>
+      <div>
+        <h1>{channel.name}</h1>
+      </div>
+      <div css={styles.messages}>
+        <List
+          channel={channel}
+          messages={messages}
+          onScrollDown={onScrollDown}
+          ref={listRef}
+        />
+      </div>
+      <div>
+        <Form addMessage={addMessage} channel={channel} oauth={oauth} />
+        <Fab
+          color="primary"
+          aria-label="Latest messages"
+          css={[styles.fab, scrollDown || styles.fabDisabled]}
+          onClick={onClickScroll}
+        >
+          <ArrowDropDownIcon />
+        </Fab>
+      </div>
     </div>
   );
 }

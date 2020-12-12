@@ -1,4 +1,4 @@
-import {forwardRef, useImperativeHandle, useLayoutEffect, useRef} from 'react'
+import {forwardRef, useImperativeHandle, useLayoutEffect, useRef, useContext} from 'react'
 /** @jsx jsx */
 import { jsx } from '@emotion/core'
 // Layout
@@ -12,20 +12,25 @@ import html from 'rehype-stringify'
 import dayjs from 'dayjs'
 import calendar from 'dayjs/plugin/calendar'
 import updateLocale from 'dayjs/plugin/updateLocale'
+
+import Context from '../Context'
+import Message from './Message'
+
 dayjs.extend(calendar)
 dayjs.extend(updateLocale)
 dayjs.updateLocale('en', {
   calendar: {
-    sameElse: 'DD/MM/YYYY hh:mm A'
+    sameElse: 'DD/MM/YYYY hh:mm'
   }
 })
 
 const useStyles = (theme) => ({
   root: {
+    minHeight: '100%',
     position: 'relative',
     flex: '1 1 auto',
     'pre': {
-      
+
       overflowY: 'auto',
     },
     '& ul': {
@@ -34,12 +39,29 @@ const useStyles = (theme) => ({
       'textIndent': 0,
       'listStyleType': 0,
     },
+    backgroundImage: 'url("../background_conv.jpg")',
+    backgroundPosition: "center center",
+    backgroundAttachement: "scroll",
+    backgroundSize: "auto auto",
   },
   message: {
     padding: '.2rem .5rem',
+    '&#from-me': {
+      '& .MuiPaper-root': {
+        backgroundColor: 'rgb(69, 113, 173)'
+      },
+      position: 'relative',
+      right: '-50%',
+    },
+    '&#from-others': {
+      '& .MuiPaper-root': {
+        backgroundColor: 'rgb(77, 77, 77)'
+      },
+    },
     ':hover': {
       backgroundColor: 'rgba(255,255,255,.05)',
     },
+    maxWidth: '50%'
   },
   fabWrapper: {
     position: 'absolute',
@@ -57,7 +79,7 @@ const useStyles = (theme) => ({
 export default forwardRef(({
   channel,
   messages,
-  onScrollDown,
+  onScrollDown
 }, ref) => {
   const styles = useStyles(useTheme())
   // Expose the `scroll` action
@@ -69,6 +91,7 @@ export default forwardRef(({
   const scroll = () => {
     scrollEl.current.scrollIntoView()
   }
+  const {oauth} = useContext(Context)
   // See https://dev.to/n8tb1t/tracking-scroll-position-with-react-hooks-3bbj
   const throttleTimeout = useRef(null) // react-hooks/exhaustive-deps
   useLayoutEffect( () => {
@@ -88,8 +111,7 @@ export default forwardRef(({
   })
   return (
     <div css={styles.root} ref={rootEl}>
-      <h1>Messages for {channel.name}</h1>
-      <ul>
+      <ul style={{maxWidth: "98%"}}>
         { messages.map( (message, i) => {
             const {contents: content} = unified()
             .use(markdown)
@@ -97,14 +119,12 @@ export default forwardRef(({
             .use(html)
             .processSync(message.content)
             return (
-              <li key={i} css={styles.message}>
-                <p>
-                  <span>{message.author}</span>
-                  {' - '}
-                  <span>{dayjs().calendar(message.creation)}</span>
-                </p>
-                <div dangerouslySetInnerHTML={{__html: content}}>
-                </div>
+              <li key={i} css={styles.message}
+                id={
+                  message.author === oauth.email ? 'from-me' : 'from-others'
+                }
+              >
+                <Message message={message} content={content} />
               </li>
             )
         })}
