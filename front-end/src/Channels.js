@@ -8,6 +8,7 @@ import Link from '@material-ui/core/Link'
 import Context from './Context'
 import {useHistory} from 'react-router-dom'
 
+import AppBar from '@material-ui/core/AppBar';
 import Button from "@material-ui/core/Button"
 
 import ChannelButton from './ChannelButton'
@@ -78,11 +79,18 @@ export default () => {
   }, [oauth, setChannels])
   return (
     <div>
-      <Button
+      <AppBar
+        position="sticky"
         style={{
-          width:"100%"
+          backgroundColor: "#1c687a"
         }}
-      >Create channel</Button>
+      >
+        <Button
+          style={{
+            width:"100%"
+          }}
+        >Create channel</Button>
+      </AppBar>
       <ul style={styles.root}>
         { channels.map( (channel, i) => (
           <ChannelButton

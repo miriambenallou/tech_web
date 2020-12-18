@@ -72,7 +72,10 @@ export default () => {
   return (
     <div css={styles.root}>
       <div style={{
-        textAlign: "Center"
+        display: 'flex',
+        justifyContent: 'center',
+        maxHeight: '50px',
+        alignItems: 'center'
       }}>
         <h1>{channel.name}</h1>
       </div>

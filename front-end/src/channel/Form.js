@@ -27,6 +27,7 @@ const useStyles = (theme) => {
       },
     },
     send: {
+      height: '100%',
     },
   }
 }
