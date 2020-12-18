@@ -43,6 +43,7 @@ export const Provider = ({
             firstname: user.firstname,
             lastname: user.lastname
           }
+          removeCookie('code_verifier')
           setCookie('oauth', o)
           setOauth(o)
         } else {

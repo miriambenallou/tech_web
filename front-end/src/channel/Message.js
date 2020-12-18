@@ -17,19 +17,25 @@ dayjs.updateLocale('en', {
   }
 })
 
+const styles = {
+  name: {
+    display: 'inline',
+  },
+}
+
 export default ({
   message,
   content
 }) => {
   console.log(dayjs(message.creation).calendar())
-  console.log(dayjs('2020-10-08').calendar())
+  console.log(dayjs(1602232260000).calendar())
   return (
     <Card variant='outlined'>
       <CardContent>
-        <p>
+        <p style={styles.name}>
           <span>{message.name}</span>
           {' - '}
-          <span>{dayjs(message.creation).calendar(message.creation)}</span>
+          <span>{dayjs(parseInt(message.creation)).calendar()}</span>
         </p>
         <div dangerouslySetInnerHTML={{__html: content}}>
         </div>

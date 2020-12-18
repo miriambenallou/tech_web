@@ -71,7 +71,9 @@ export default () => {
   }
   return (
     <div css={styles.root}>
-      <div>
+      <div style={{
+        textAlign: "Center"
+      }}>
         <h1>{channel.name}</h1>
       </div>
       <div css={styles.messages}>

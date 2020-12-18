@@ -8,12 +8,15 @@ import Link from '@material-ui/core/Link'
 import Context from './Context'
 import {useHistory} from 'react-router-dom'
 
+import Button from "@material-ui/core/Button"
+
 import ChannelButton from './ChannelButton'
 import ChannelSettingsDialog from './ChannelSettingsDialog'
+import CreateChannelDialog from './CreateChannelDialog'
 
 const styles = {
   root: {
-    minWidth: '200px',
+    maxWidth: '200px',
   },
   channel: {
     padding: '.2rem .5rem',
@@ -51,6 +54,7 @@ export default () => {
   const [dialog, setDialog] = useState({
     open: false
   })
+  const [openCreate, setOpenCreate] = useState(false)
   useEffect( () => {
     const fetch = async () => {
       try{
@@ -74,6 +78,11 @@ export default () => {
   }, [oauth, setChannels])
   return (
     <div>
+      <Button
+        style={{
+          width:"100%"
+        }}
+      >Create channel</Button>
       <ul style={styles.root}>
         { channels.map( (channel, i) => (
           <ChannelButton

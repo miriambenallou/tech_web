@@ -12,7 +12,7 @@ const config = {
     messages: [{
       author: 'miriam@gmail.com',
       name: 'miriam',
-      creation: 1602831101929,
+      creation: 1602174660000,
       content: `
       ## 1 - Architecture - Level easy
 
@@ -24,7 +24,7 @@ const config = {
     },{
       author: 'herduinpierre@yahoo.com',
       name: 'pierre',
-      creation: 1602832138892,
+      creation: 1602174720000,
       content: `
       ## 2 - Styles - Level easy
 
@@ -35,7 +35,7 @@ const config = {
     },{
       author: 'miriam@gmail.com',
       name: 'miriam',
-      creation: 1602840139202,
+      creation: 1602174780000,
       content: `
       ## 3 - Use an external library - Level medium
 
@@ -50,7 +50,7 @@ const config = {
     },{
       author: 'herduinpierre@yahoo.com',
       name: 'pierre',
-      creation: 1602844139200,
+      creation: 1602231540000,
       content: `
       ## 4 - Support message contents in Markdown - Level hard
 
@@ -76,14 +76,14 @@ const config = {
     messages: [{
       author: 'miriam@gmail.com',
       name: 'miriam',
-      creation: 1602223579200,
+      creation: 1602231900000,
       content: `
       Ping
       `.replace(/^ {6}/gm,'')
     },{
       author: 'pierre@yahoo.com',
       name: 'pierre',
-      creation: 1602523579200,
+      creation: 1602232020000,
       content: `
       Pong
       `.replace(/^ {6}/gm,'')
@@ -97,14 +97,14 @@ const config = {
     messages: [{
       author: 'herduinpierre@yahoo.com',
       name: 'pierre herduin',
-      creation: 1602223579200,
+      creation: 1602232200000,
       content: `
       What is the answer to the Ultimate Question of Life, the Universe and Everything ?
       `.replace(/^ {6}/gm,'')
     },{
       author: 'pierre@yahoo.com',
       name: 'pierre',
-      creation: 1602523579200,
+      creation: 1602232260000,
       content: `
       42
       `.replace(/^ {6}/gm,'')
@@ -115,6 +115,118 @@ const config = {
     ],
     creator: "pierre@yahoo.com",
     name: "Our little group"
+  }, {
+    messages: [],
+    members: [
+      "herduinpierre@yahoo.com",
+      "pierre@yahoo.com"
+    ],
+    creator: "pierre@yahoo.com",
+    name: "channel1"
+  }, {
+    messages: [],
+    members: [
+      "herduinpierre@yahoo.com",
+      "pierre@yahoo.com"
+    ],
+    creator: "pierre@yahoo.com",
+    name: "channel2"
+  }, {
+    messages: [],
+    members: [
+      "herduinpierre@yahoo.com",
+      "pierre@yahoo.com"
+    ],
+    creator: "pierre@yahoo.com",
+    name: "channel3"
+  }, {
+    messages: [],
+    members: [
+      "herduinpierre@yahoo.com",
+      "pierre@yahoo.com"
+    ],
+    creator: "pierre@yahoo.com",
+    name: "channel4"
+  }, {
+    messages: [],
+    members: [
+      "herduinpierre@yahoo.com",
+      "pierre@yahoo.com"
+    ],
+    creator: "pierre@yahoo.com",
+    name: "channel5"
+  }, {
+    messages: [],
+    members: [
+      "herduinpierre@yahoo.com",
+      "pierre@yahoo.com"
+    ],
+    creator: "pierre@yahoo.com",
+    name: "channel6"
+  }, {
+    messages: [],
+    members: [
+      "herduinpierre@yahoo.com",
+      "pierre@yahoo.com"
+    ],
+    creator: "pierre@yahoo.com",
+    name: "channel7"
+  }, {
+    messages: [],
+    members: [
+      "herduinpierre@yahoo.com",
+      "pierre@yahoo.com"
+    ],
+    creator: "pierre@yahoo.com",
+    name: "channel8"
+  }, {
+    messages: [],
+    members: [
+      "herduinpierre@yahoo.com",
+      "pierre@yahoo.com"
+    ],
+    creator: "pierre@yahoo.com",
+    name: "channel9"
+  }, {
+    messages: [],
+    members: [
+      "herduinpierre@yahoo.com",
+      "pierre@yahoo.com"
+    ],
+    creator: "pierre@yahoo.com",
+    name: "channel10"
+  }, {
+    messages: [],
+    members: [
+      "herduinpierre@yahoo.com",
+      "pierre@yahoo.com"
+    ],
+    creator: "pierre@yahoo.com",
+    name: "channel11"
+  }, {
+    messages: [],
+    members: [
+      "herduinpierre@yahoo.com",
+      "pierre@yahoo.com"
+    ],
+    creator: "pierre@yahoo.com",
+    name: "channel12"
+  }, {
+    messages: [],
+    members: [
+      "herduinpierre@yahoo.com",
+      "pierre@yahoo.com"
+    ],
+    creator: "pierre@yahoo.com",
+    name: "channel13"
+  }, {
+    messages: [],
+    members: [
+      "herduinpierre@yahoo.com",
+      "pierre@yahoo.com"
+    ],
+    creator: "pierre@yahoo.com",
+    name: "channel14"
   }].map( async (channel) => {
     const {data: {id}} = await axios.post(`http://localhost:${config.port}/channels`, {
       name: channel.name,

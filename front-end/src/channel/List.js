@@ -48,14 +48,25 @@ const useStyles = (theme) => ({
     padding: '.2rem .5rem',
     '&#from-me': {
       '& .MuiPaper-root': {
-        backgroundColor: 'rgb(69, 113, 173)'
+        backgroundColor: 'rgb(69, 113, 173)',
+        borderRadius: '20px 20px 0px 20px',
+        border: '2px ridge grey',
+      },
+      '& .MuiCardContent-root': {
+        padding: '5px 10px 10px 5px',
       },
       position: 'relative',
       right: '-50%',
+      height: 'auto'
     },
     '&#from-others': {
       '& .MuiPaper-root': {
-        backgroundColor: 'rgb(77, 77, 77)'
+        backgroundColor: 'rgb(77, 77, 77)',
+        borderRadius: '20px 20px 20px 0px',
+        border: '2px ridge grey',
+      },
+      '& .MuiCardContent-root': {
+        padding: '5px 10px 10px 5px',
       },
     },
     ':hover': {
