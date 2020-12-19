@@ -56,11 +56,10 @@ export default () => {
     open: false
   })
   const [openCreate, setOpenCreate] = useState(false)
+  const [users, setUsers] = useState([])
   useEffect( () => {
     const fetch = async () => {
       try{
-        // const data = await axios.get('http://localhost:3001/channels', {
-        console.log(oauth.access_token)
         const {data: channels} = await axios.get('http://localhost:3001/channels', {
           headers: {
             'Authorization': `Bearer ${oauth.access_token}`,
@@ -77,6 +76,52 @@ export default () => {
     }
     fetch()
   }, [oauth, setChannels])
+
+  const getUsers = async () => {
+    const {data} = await axios.get('http://127.0.0.1:3001/users')
+    
+    let arr = []
+    for (let i = 0; i < data.length; i++) {
+      let a = data[i]
+      let alone = true
+      for (let j = 0; j < data.length; j++) {
+        if (i !== j) {
+          let b = data[j]
+          if ( (a.firstname + ' ' + a.lastname) === (b.firstname + ' ' + b.lastname) ) {
+            alone = false
+            break
+          }
+        }
+      }
+      arr.push({
+        user: data[i],
+        bymail: !alone
+      })      
+    }
+
+    setUsers(arr)
+  }
+
+  const createChannel = async () => {
+    await getUsers()
+
+    setOpenCreate(true)
+  }
+
+  const editChannel = async (obj) => {
+    await getUsers()
+
+    setDialog({
+      channelId: obj.channelId,
+      creator: obj.creator,
+      open: true,
+      name: obj.name,
+      members: obj.members
+    })
+  }
+
+  console.log("oauth :", oauth)
+
   return (
     <div>
       <AppBar
@@ -89,6 +134,7 @@ export default () => {
           style={{
             width:"100%"
           }}
+          onClick={createChannel}
         >Create channel</Button>
       </AppBar>
       <ul style={styles.root}>
@@ -98,7 +144,7 @@ export default () => {
             styles={styles}
             history={history}
             i={i}
-            setDialog={setDialog}
+            setDialog={editChannel}
           />
         ))}
       </ul>
@@ -106,6 +152,13 @@ export default () => {
         dialog={dialog}
         setDialog={setDialog}
         oauth={oauth}
+        users={users}
+      />
+      <CreateChannelDialog
+        open={openCreate}
+        setOpen={setOpenCreate}
+        oauth={oauth}
+        users={users}
       />
     </div>
   );

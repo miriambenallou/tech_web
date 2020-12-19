@@ -38,8 +38,15 @@ app.get('/channels', authenticate, async (req, res) => {
   res.json(channels)
 })
 
-app.post('/channels', async (req, res) => {
-  const channel = await db.channels.create(req.body)
+app.post('/channels', authenticate, async (req, res) => {
+  const c = JSON.parse(req.query.channel)
+  const chan = {
+    name: c.name,
+    members: c.members,
+    creator: req.query.email
+  }
+  console.log(chan)
+  const channel = await db.channels.create(chan)
   res.status(201).json(channel)
 })
 

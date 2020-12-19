@@ -46,7 +46,7 @@ module.exports = ({jwks_uri} = {}) => {
       const usr = await db.users.getByEmail(req.query.email)
 
       if (usr.access_token === access_token) {
-        // req.user = usr
+        req.user = usr
         next()
       } else {
         res.status(401).send('Invalid Access Token -- no-oauth')
