@@ -8,6 +8,8 @@ import Header from './Header'
 import Main from './Main'
 import Login from './Login'
 import Context from './Context'
+import SettingsDialog from './SettingsDialog'
+
 // Rooter
 import {
   Switch,
@@ -50,6 +52,20 @@ export default () => {
               <Login />
             )
           }
+        </Route>
+        <Route path="/settings">
+        {
+          oauth ? (
+            <SettingsDialog />
+          ) : (
+            <Redirect
+              to={{
+                pathname: "/",
+                state: { from: location }
+              }}
+            />
+          )
+        }
         </Route>
         <Route path="/channels">
           {

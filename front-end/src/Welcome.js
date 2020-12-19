@@ -5,9 +5,11 @@ import { jsx } from '@emotion/core'
 import { useTheme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
 import {ReactComponent as ChannelIcon} from './icons/channel.svg';
 import {ReactComponent as FriendsIcon} from './icons/friends.svg';
 import {ReactComponent as SettingsIcon} from './icons/settings.svg';
+import {useHistory} from 'react-router-dom'
 
 const useStyles = (theme) => ({
   root: {
@@ -19,18 +21,37 @@ const useStyles = (theme) => ({
     backgroundPosition: "center center",
     backgroundAttachement: "fixed",
     backgroundSize: "cover",
+
+    '& .MuiGrid-item > :hover ': {
+        backgroundColor: "rgba(255,255,255,.3)",
+        borderRadius: '5px',
+    }
   },
   card: {
-    textAlign: 'center',
+    textAlign: 'center'
   },
   icon: {
     width: '30%',
     fill: '#fff',
+    '& svg :hover' : {
+      display: 'none',
+      position: "relative",
+      backgroundColor: "rgba(255,255,255,.3)",
+      borderRadius: '5px',
   }
-})
+
+}}
+)
+
+
 
 export default () => {
+  const history = useHistory();
   const styles = useStyles(useTheme())
+
+  const goSettings = () => {
+    history.push('/settings')
+  }
   return (
     <div id="icon_container" css={styles.root}>
       <Grid
@@ -58,7 +79,7 @@ export default () => {
         </Grid>
         <Grid item xs>
           <div css={styles.card}>
-            <SettingsIcon css={styles.icon} />
+            <SettingsIcon css={styles.icon} onClick={goSettings}/>
             <Typography color="textPrimary">
               Settings
             </Typography>
