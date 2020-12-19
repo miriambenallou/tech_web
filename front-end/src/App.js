@@ -56,7 +56,7 @@ export default () => {
         <Route path="/settings">
         {
           oauth ? (
-            <SettingsDialog />
+            <SettingsDialog oauth={oauth} />
           ) : (
             <Redirect
               to={{

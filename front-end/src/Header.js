@@ -13,13 +13,14 @@ import Typography from '@material-ui/core/Typography';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import HomeIcon from '@material-ui/icons/Home';
 import Context from './Context'
+import Gravatar from 'react-gravatar'
 
 const useStyles = (theme) => ({
   header: {
     textAlign:'center',
     fontSize: '35px',
     padding: theme.spacing(1),
-    height : '40px',
+    height : '45px',
     backgroundColor: 'rgba(45,45,45)',
     flexShrink: 0,
 
@@ -31,6 +32,16 @@ const useStyles = (theme) => ({
     '& .container': {
       display : 'flex',
       justifyContent: 'space-between',
+
+    },
+    '& #gravatar_div': {
+      '& #gravatar' : {
+        borderRadius: '50%',
+        '&:hover': {
+          backgroundColor: 'rgba(255,95,45,0.5)',
+          cursor: 'pointer',
+        },
+      },
     },
 
     '& #container_home' : {
@@ -82,7 +93,9 @@ const useStyles = (theme) => ({
     [theme.breakpoints.up('sm')]: {
       display: 'none !important',
     },
-  }
+  },
+
+
 })
 
 export default ({
@@ -106,6 +119,11 @@ export default ({
     history.push('/channels')
     // window.location = "/channels"
   }
+
+  const goSettings = () => {
+    history.push('/settings')
+  }
+
   return (
     <header css={styles.header}>
       <IconButton
@@ -127,10 +145,8 @@ export default ({
         </div>
         {
           oauth ?
-            <div>
-              <span>
-                 {oauth.email}
-              </span>
+            <div id= "gravatar_div" style={styles.gravatar}>
+              <Gravatar id="gravatar" email={oauth.email} default="monsterid" onClick={goSettings}/>
             </div>
 
           :

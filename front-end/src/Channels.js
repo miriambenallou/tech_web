@@ -79,7 +79,7 @@ export default () => {
 
   const getUsers = async () => {
     const {data} = await axios.get('http://127.0.0.1:3001/users')
-    
+
     let arr = []
     for (let i = 0; i < data.length; i++) {
       let a = data[i]
@@ -96,7 +96,7 @@ export default () => {
       arr.push({
         user: data[i],
         bymail: !alone
-      })      
+      })
     }
 
     setUsers(arr)
@@ -121,6 +121,7 @@ export default () => {
   }
 
   console.log("oauth :", oauth)
+  console.log(users)
 
   return (
     <div>
