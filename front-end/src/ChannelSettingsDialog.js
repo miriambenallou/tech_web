@@ -168,6 +168,10 @@ export default ({
     handleClose()
   }
 
+  const handleDelete = async () => {
+    await axios.
+  }
+
   return (
     <Dialog
       open={dialog.open}
@@ -175,7 +179,16 @@ export default ({
       style={{borderRadius:'100px'}}
       onEnter={handleEnterDialog}
     >
-      <DialogTitle id="edit-channel">Edit channel</DialogTitle>
+      <DialogTitle id="edit-channel">
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
+          <div>Edit Channel</div>
+          <Button variant="contained" onClick={handleDelete} color='secondary' >Delete</Button>
+        </div>
+      </DialogTitle>
       <DialogContent>
         <CssTextField
           margin="dense"

@@ -60,6 +60,16 @@ app.put('/channels/:id', async (req, res) => {
   res.json(channel)
 })
 
+app.delete('/channels/:id', authenticate, async (req, res) => {
+  const c = JSON.parse(req.query.channel)
+  if (c.creator === req.query.email) {
+    await db.channels.delete(req.query)
+    res.status(201).json(null)
+  } else {
+    res.status(401).json({msg: "Not authorized to delete this channel !"})
+  }
+})
+
 // Messages
 
 app.get('/channels/:id/messages', async (req, res) => {
