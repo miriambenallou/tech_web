@@ -170,7 +170,7 @@ module.exports = {
       })
     },
     update: async (user, token) => {
-      const original = await db.get(`users:${user.id}`)
+      const original = JSON.parse(await db.get(`users:${user.id}`))
       if (!original) throw Error("Invalid user id !")
 
       await db.del(`users:${user.id}`)
@@ -179,29 +179,19 @@ module.exports = {
       if (token) {
         data = await db.put(`users:${user.id}`, JSON.stringify(merge(user, {access_token: token})))
       } else {
-        data = await db.put(`users:${user.id}`, JSON.stringify(user))
+        data = await db.put(`users:${user.id}`, JSON.stringify(merge({
+          email: user.email,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          password: original.password,
+          type: original.type,
+          gravatar: user.gravatar,
+        }, {id: user.id})))
       }
       return data
     },
-    delete: (email) => {
-      return new Promise( (resolve, reject) => {
-        db.createReadStream({
-          gt: "users:",
-          lte: "users" + String.fromCharCode(":".charCodeAt(0) + 1),
-        }).on('data', ({key, value}) => {
-          user = JSON.parse(value)
-          if (user.email === email) {
-            let id = key.split("users:")[1]
-            // const data = db.delete(`users:${id}`)
-            const data = db.put(`users:${id}`, JSON.stringify({}))
-            resolve(data)
-          }
-        }).on('error', (err) => {
-          reject(err)
-        }).on('end', () => {
-          resolve(null)
-        })
-      })
+    delete: (id) => {
+      db.del(`users:${id}`)
     }
   },
   admin: {
@@ -219,6 +209,31 @@ module.exports = {
         reject(err)
       }).on( 'end', () => {
         resolve(arr)
+      })
+    })
+  },
+  count: async (email) => {
+    return new Promise( (resolve, reject) => {
+      let created = 0
+      let all = 0
+      db.createReadStream({
+
+      }).on('data', (data) => {
+        if (data.key.toString().includes('channels')) {
+          const chan = JSON.parse(data.value)
+          // console.log(chan)
+
+          if (chan.creator === email) {
+            created++
+            all++
+          } else if (chan.members.includes(email)) {
+            all++
+          }
+        }
+      }).on('error', (err) => {
+        reject(err)
+      }).on('end', () => {
+        resolve([created, all])
       })
     })
   }

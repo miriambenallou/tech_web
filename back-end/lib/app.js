@@ -30,6 +30,13 @@ app.post('/admin/reset', async (req, res) => {
   res.json({})
 })
 
+// Count.
+app.get('/count', authenticate, async (req, res) => {
+  // console.log(req)
+  const data = await db.count(req.user.email)
+  res.json(data)
+})
+
 // Channels
 
 // app.get('/channels', async (req, res) => {
@@ -142,9 +149,11 @@ app.put('/users/:email', async (req, res) => {
   }
 })
 
-// app.delete('/users/:email', async (req, res) => {
-//   console.log("Try to delete :", req.params.email)
-//   const data = await db.users.delete(req.params.email)
-// })
+app.delete('/users/:email', async (req, res) => {
+  const data = await db.users.getByEmail(req.params.email)
+  if (!data) throw Error("User does not exist")
+  const dt = await db.users.delete(data.id)
+  res.status(201).json(dt)
+})
 
 module.exports = app

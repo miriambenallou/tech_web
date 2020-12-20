@@ -1,6 +1,11 @@
 import React from 'react';
-import {useState} from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import {useState, useContext} from 'react';
+
+import axios from 'axios'
+
+import Context from './Context'
+
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Avatar from '@material-ui/core/Avatar';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -9,6 +14,8 @@ import SaveIcon from '@material-ui/icons/Save';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Button from '@material-ui/core/Button';
 import Gravatar from 'react-gravatar'
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
 
 const gravatars = [
   "wavatar", "monsterid", "identicon", "retro", "robohash", "mp"
@@ -44,6 +51,13 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
       width: '25ch',
 
+    },
+    
+    "& .MuiList-root" : {
+      display: 'flex',
+      backgroundColor:'white',
+      flexDirection: 'column',
+      alignItems: 'center',
     },
 
     '& #button' : {
@@ -104,16 +118,16 @@ const useStyles = makeStyles((theme) => ({
       display:'flex',
       marginTop:5,
       flexDirection:'column',
-      justifyContent:"center",
-      "& #avatar_options": {
+      alignItems:"center",
 
+      "& #avatar_options": {
         '& > div' : {
           margin: '15px',
         },
         display: 'flex',
       },
       '& #gravatar': {
-        borderRadius:'50%'
+        borderRadius:'50%',
       },
       '& .MuiAvatar-colorDefault' : {
         height: '70px',
@@ -121,33 +135,86 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
-
 }));
 
-export default ({oauth}) => {
+export default ({
+  oauth
+}) => {
 
   const classes = useStyles();
-  const [gravatar, setGravatar] = useState ('monsterid')
+  const [gravatar, setGravatar] = useState (oauth.gravatar ? oauth.gravatar : 'monsterid')
   const [language, setLanguage] = useState('ENG');
+  const [first, setFirst] = useState(oauth.firstname)
+  const [last, setLast] = useState(oauth.lastname)
+  const [email, setEmail] = useState(oauth.email)
+  const [open, setOpen] = useState(false)
+  const {setNoOauth, setOauth} = useContext(Context)
 
   const handleChangeFile = (e) => {
     console.log(e.target.files[0])
   }
 
+  const handleChangeSelect = (e) => {
+    setGravatar(e.target.id)
+  }
+
+  const handleDelete = async () => {
+    setOpen(true)
+  }
+
+  const handleDeleteSure = async () => {
+    await axios.delete(`http://127.0.0.1:3001/users/${oauth.email}`)
+    setOpen(false)
+    setOauth(null)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  const handleSave = async () => {
+    const {data} = await axios.get(`http://127.0.0.1:3001/users/${oauth.email}`)
+    const obj = {
+      user: {
+        firstname: first,
+        lastname: last,
+        email: email,
+        id: data.id,
+        gravatar: gravatar,
+      }
+    }
+    const dt = await axios.put(`http://127.0.0.1:3001/users/${oauth.email}`, obj)
+    setNoOauth(obj.user)
+  }
+
+  const handleChangeFirst = (e) => {
+    setFirst(e.target.value)
+  }
+
+  const handleChangeLast = (e) => {
+    setLast(e.target.value)
+  }
+
+  const handleChangeEmail = (e) => {
+    setEmail(e.target.value)
+  }
+
+  const handleChangeLang = (e) => {
+    setLanguage(e.target.dataset.value)
+  }
+
   return (
   <form className={classes.root} noValidate autoComplete="off">
     <div id="container">
-
       <div id= "avatar">
-
-              <Gravatar id="gravatar" email={oauth.email} default="monsterid"/>
-              <input
-                  id="input_file"
-                  hidden
-                  accept="image/*"
-                  type="file"
-                  onChange={handleChangeFile}
-              />
+        <Gravatar id="gravatar" email={oauth.email} default={gravatar} />
+        <input
+            id="input_file"
+            hidden
+            accept="image/*"
+            type="file"
+            onChange={handleChangeFile}
+        />
               <div id= "avatar_options">
               <div>
                 <label htmlFor="input_file">
@@ -166,33 +233,44 @@ export default ({oauth}) => {
                     select
                     value={gravatar}
                     helperText="Choose one"
-                    css={{
-                    "& .MuiList-root" : {
-                      display: 'flex',
-                      backgroundColor:'white',
-                      flexDirection: 'column',
-                    },
-                  }}
                   >
                     {gravatars.map((option) => (
-                        <Gravatar email={''} default={option} />
+                        <Gravatar id={option} email={oauth.email} default={option} onClick={handleChangeSelect}/>
                     ))}
                 </TextField>
               </div>
               </div>
-
-
-
       </div>
 
 
       <div id="name-container">
-      <TextField variant="outlined" required id="standard-required" label = "First Name" defaultValue="First Name" />
-      <TextField id="second_txt" variant="outlined" required  label="Last Name" defaultValue="Last Name" />
+      <TextField 
+        variant="outlined" 
+        id="standard-required" 
+        label = "First Name" 
+        value={first} 
+        onChange={handleChangeFirst}
+        disabled={oauth.userType !== 'no-oauth'}
+      />
+      <TextField 
+        id="second_txt" 
+        variant="outlined" 
+        label="Last Name" 
+        value={last} 
+        onChange={handleChangeLast}
+        disabled={oauth.userType !== 'no-oauth'}
+      />
       </div>
 
       <div id="email">
-      <TextField variant="outlined" required id="standard-required" label="E-mail" defaultValue="example@yahoo.fr" />
+      <TextField 
+        variant="outlined" 
+        id="standard-required" 
+        label="E-mail"
+        value={email}
+        onChange={handleChangeEmail}
+        disabled={oauth.userType !== 'no-oauth'}
+      />
       </div>
 
       <TextField
@@ -203,7 +281,7 @@ export default ({oauth}) => {
           helperText="Please choose your language"
         >
           {languages.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
+            <MenuItem key={option.value} value={option.value} onClick={handleChangeLang} >
               {option.label}
             </MenuItem>
           ))}
@@ -212,25 +290,35 @@ export default ({oauth}) => {
       <div id="button">
 
           <Button
-          variant="contained"
-          color="secondary"
-          className={classes.button}
-          startIcon={<DeleteIcon />}>
-          Discard
+            variant="contained"
+            color="secondary"
+            className={classes.button}
+            startIcon={<DeleteIcon />}
+            onClick={handleDelete}
+          >
+          Delete Account
           </Button>
 
           <Button
-          variant="contained"
-          color="primary"
-          className={classes.button}
-          startIcon={<SaveIcon />}
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            startIcon={<SaveIcon />}
+            onClick={handleSave}
           >
           Save
           </Button>
-
       </div>
-
      </div>
+     <Dialog
+      open={open}
+      onClose={handleClose}
+     >
+       <DialogActions>
+        <Button variant="contained" onClick={handleDeleteSure} color="secondary">Delete account</Button>
+        <Button variant="contained" onClick={handleClose} color="primary">Cancel</Button>
+      </DialogActions>
+     </Dialog>
    </form>
   );
 }

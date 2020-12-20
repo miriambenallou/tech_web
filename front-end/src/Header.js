@@ -146,7 +146,7 @@ export default ({
         {
           oauth ?
             <div id= "gravatar_div" style={styles.gravatar}>
-              <Gravatar id="gravatar" email={oauth.email} default="monsterid" onClick={goSettings}/>
+              <Gravatar id="gravatar" email={oauth.email} default={oauth.gravatar ? oauth.gravatar : "monsterid"} onClick={goSettings}/>
             </div>
 
           :

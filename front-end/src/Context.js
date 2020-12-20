@@ -41,12 +41,16 @@ export const Provider = ({
             userType: "no-oauth",
             access_token: user.access_token,
             firstname: user.firstname,
-            lastname: user.lastname
+            lastname: user.lastname,
+            gravatar: user.gravatar,
           }
           removeCookie('code_verifier')
           setCookie('oauth', o)
           setOauth(o)
         } else {
+          setCurrentChannel(null)
+          setChannels([])
+          removeCookie('oauth')
           console.log("ERROR NO OAUTH USER NULL")
         }
       },

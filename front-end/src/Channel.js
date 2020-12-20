@@ -39,6 +39,7 @@ export default () => {
   const { id } = useParams()
   const {channels, oauth} = useContext(Context)
   const channel = channels.find( channel => channel.id === id)
+
   if(!channel) {
     history.push('/channels')
     return <div/>

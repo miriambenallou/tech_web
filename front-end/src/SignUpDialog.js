@@ -66,6 +66,8 @@ export default ({
   })
 
   const handleClose = () => {
+    setPasswordVisible(false)
+    setPasswordRepeatVisible(false)
     setOpenUp(false)
     setErrorMessages({
       firstname: "",

@@ -63,6 +63,7 @@ export default ({
   })
 
   const handleClose = () => {
+    setPasswordVisible(false)
     setOpenUp(false)
     setErrorMessages({
       email: "",

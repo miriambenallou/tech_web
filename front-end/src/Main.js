@@ -84,7 +84,7 @@ export default ({
           <Channel />
         </Route>
         <Route path="/">
-          <Welcome />
+          <Welcome oauth={oauth} />
         </Route>
       </Switch>
     </main>

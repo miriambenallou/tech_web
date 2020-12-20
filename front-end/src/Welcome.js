@@ -2,6 +2,7 @@ import {} from 'react';
 /** @jsx jsx */
 import { jsx } from '@emotion/core'
 // Layout
+import axios from 'axios'
 import { useTheme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import {useState, useContext} from 'react';
@@ -83,13 +84,36 @@ const useStyles = (theme) => ({
 
 
 
-export default () => {
+export default ({
+  oauth,
+}) => {
   const history = useHistory();
   const styles = useStyles(useTheme())
-  const oauth = useContext(Context)
+  const [created, setCreated] = useState(0)
+  const [all, setAll] = useState(0)
+
   const goSettings = () => {
     history.push('/settings')
   }
+
+  const count = async () => {
+    if (!oauth) return
+
+    const {data} = await axios.get(`http://127.0.0.1:3001/count`, {
+      headers: {
+        'Authorization': `Bearer ${oauth.access_token}`,
+        'no-oauth': true
+      },
+      params: {
+        email: oauth.email
+      }
+    })
+    setCreated(data[0])
+    setAll(data[1])
+  }
+
+  count()
+
   return (
 
       <div id="icon_container" css={styles.root}>
@@ -97,19 +121,27 @@ export default () => {
       <Typography
         style = {{fontSize:'1.5rem'}} css={styles.welcome}
         color="textPrimary">
-        Welcome, @ email {oauth.email}
+          <div css={{
+            display:'flex',
+            '& > p': {
+              marginLeft: '10px',
+            }
+          }}>
+            <p>Welcome</p>
+            <p>{oauth.firstname} {oauth.lastname}</p>
+          </div>
       </Typography >
         <Typography
           style = {{fontSize:'1.2rem'}}
           css={styles.nmbOfChannels}
           color="textPrimary">
-          Number of Channels created :
+          Number of Channels created : {created}
         </Typography>
         <Typography
           style = {{fontSize:'1.2rem'}}
           css={styles.total}
           color="textPrimary">
-          Total number of channels :
+          Total number of channels : {all}
         </Typography>
       </div>
         <Grid

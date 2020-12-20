@@ -55,7 +55,7 @@ export default ({
     setContent(e.target.value)
   }
   return (
-    <form css={styles.form} onSubmit={onSubmit} noValidate>
+    <form css={styles.form} noValidate>
       <TextField
         id="outlined-multiline-flexible"
         label="Message"
@@ -68,7 +68,7 @@ export default ({
       />
       <div>
         <Button
-        type="submit"
+          type="button"
           variant="contained"
           color="primary"
           css={styles.send}
