@@ -9,8 +9,6 @@ const styles = {
     flexDirection: 'column',
     backgroundColor: 'rgba(45,45,45)',
     flexShrink: 0,
-    position:'absolute',
-    bottom:'0px',
     width:"100%",
   },
 }

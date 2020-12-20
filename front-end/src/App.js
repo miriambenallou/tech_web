@@ -24,6 +24,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     backgroundColor: '#565E71',
+    justifyContent: 'space-between'
   },
 }
 
