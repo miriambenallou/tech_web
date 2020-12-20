@@ -68,6 +68,7 @@ export default ({
       />
       <div>
         <Button
+        type="submit"
           variant="contained"
           color="primary"
           css={styles.send}

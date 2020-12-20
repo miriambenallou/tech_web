@@ -75,7 +75,8 @@ export default () => {
         display: 'flex',
         justifyContent: 'center',
         maxHeight: '50px',
-        alignItems: 'center'
+        alignItems: 'center',
+
       }}>
         <h1>{channel.name}</h1>
       </div>
