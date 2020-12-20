@@ -32,7 +32,8 @@ const useStyles = (theme) => ({
     '& .container': {
       display : 'flex',
       justifyContent: 'space-between',
-
+      alignItems: 'flex-start',
+      marginTop: '-3px',
     },
     '& #gravatar_div': {
       '& #gravatar' : {
@@ -65,6 +66,7 @@ const useStyles = (theme) => ({
       position: "relative",
       backgroundColor: "rgba(255,255,255,.3)",
       borderRadius: '5px',
+      cursor: 'pointer',
     },
 
     '& .container-nooauth': {
@@ -80,6 +82,7 @@ const useStyles = (theme) => ({
       position: "relative",
       backgroundColor: "rgba(255,255,255,.3)",
       borderRadius: '5px',
+      cursor: 'pointer',
     },
   },
   headerLogIn: {
@@ -94,8 +97,6 @@ const useStyles = (theme) => ({
       display: 'none !important',
     },
   },
-
-
 })
 
 export default ({

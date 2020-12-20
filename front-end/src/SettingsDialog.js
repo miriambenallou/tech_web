@@ -337,7 +337,7 @@ export default ({
         email: oauth.email,
         access_token: oauth.access_token,
         id_token: oauth.id_token,
-        gravatar: (oauth.gravatar) ? oauth.gravatar : "monsterid",
+        gravatar: (data.gravatar) ? data.gravatar : (oauth.gravatar ? oauth.gravatar : "monsterid"),
       })
       window.location = '/'
     }

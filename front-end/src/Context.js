@@ -28,7 +28,7 @@ export const Provider = ({
           oauth.email = payload.email
           oauth.userType = "oauth"
           const {data} = axios.get(`http://127.0.0.1:3001/users/${oauth.email}`)
-          console.log(data)
+          
           if (data) {
             oauth.firstname = (data.firstname) ? data.firstname : ''
             oauth.lastname = (data.lastname) ? data.lastname : ''

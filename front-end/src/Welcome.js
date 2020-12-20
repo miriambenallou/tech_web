@@ -40,6 +40,7 @@ const useStyles = (theme) => ({
     '& .MuiGrid-item > :hover ': {
         backgroundColor: "rgba(255,255,255,.3)",
         borderRadius: '5px',
+        cursor: 'pointer',
     },
     '& .MuiTypography-root': {
       width: "70%",
@@ -67,10 +68,6 @@ const useStyles = (theme) => ({
       backgroundColor: "rgba(255,255,255,.3)",
       borderRadius: '30%',
   },
-
-  //buttons: {
-//    marginTop: '30%',
-//  },
   welcome: {
     maxWidth: '200px',
   },
