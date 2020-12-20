@@ -118,7 +118,6 @@ export default ({
   }
   const goHome = () => {
     history.push('/channels')
-    // window.location = "/channels"
   }
 
   const goSettings = () => {

@@ -229,25 +229,37 @@ const config = {
     name: "channel14"
   }].map( async (channel) => {
     const {data: {id}} = await axios.post(`http://localhost:${config.port}/channels`, {}, {
+      headers: {
+        'Authorization': 'Bearer 7e1b551f-93e7-4af1-96dc-bc5ec2959e78-62894014-3594-40d7-a6e8-ab6067a71781',
+        'no-oauth': false
+      },
       params: {
         email: channel.creator,
         channel: {
           name: channel.name,
           members: channel.members,
         },
-      },
+      }
     })
     return Promise.all( channel.messages.map( async (message) => {
-      await axios.post(`http://localhost:${config.port}/channels/${id}/messages`, message)
+      await axios.post(`http://localhost:${config.port}/channels/${id}/messages`, {
+        headers: {
+          'Authorization': 'Bearer 7e1b551f-93e7-4af1-96dc-bc5ec2959e78-62894014-3594-40d7-a6e8-ab6067a71781',
+          'no-oauth': false
+        },
+        params: {
+          message
+        }
+      })
     }))
   }))
 
   await Promise.all([
     {
       email: "pierre@yahoo.com",
-      firstname: "Pierre",
+      firstname: "Pierre", 
       lastname: "Herduin",
-      password: "1aXWa5To2gz2PUzW1mzUideOd7aXA5xsSOP_jYF1ITk",
+      password: "1aXWa5To2gz2PUzW1mzUideOd7aXA5xsSOP_jYF1ITk", // Password is 'pierre'
       type: "no-oauth",
     },
     {
