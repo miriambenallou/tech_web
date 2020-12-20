@@ -60,10 +60,11 @@ export default () => {
   useEffect( () => {
     const fetch = async () => {
       try{
+        const nooauth = oauth.userType === 'no-oauth'
         const {data: channels} = await axios.get('http://localhost:3001/channels', {
           headers: {
             'Authorization': `Bearer ${oauth.access_token}`,
-            'no-oauth': true
+            'no-oauth': nooauth
           },
           params: {
             email: oauth.email
@@ -78,7 +79,16 @@ export default () => {
   }, [oauth, setChannels])
 
   const getUsers = async () => {
-    const {data} = await axios.get('http://127.0.0.1:3001/users')
+    const nooauth = oauth.userType === 'no-oauth'
+    const {data} = await axios.get('http://127.0.0.1:3001/users', {
+      headers: {
+        'Authorization': `Bearer ${oauth.access_token}`,
+        'no-oauth': nooauth
+      },
+      params: {
+        email: oauth.email
+      }
+    })
 
     let arr = []
     for (let i = 0; i < data.length; i++) {
@@ -146,6 +156,7 @@ export default () => {
             history={history}
             i={i}
             setDialog={editChannel}
+            oauth={oauth}
           />
         ))}
       </ul>

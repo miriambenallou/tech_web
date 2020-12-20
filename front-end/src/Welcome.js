@@ -15,6 +15,8 @@ import {ReactComponent as SettingsIcon} from './icons/settings.svg';
 import {useHistory} from 'react-router-dom'
 import Context from './Context'
 
+import CreateChannelDialog from './CreateChannelDialog'
+
 const useStyles = (theme) => ({
   root: {
     height: '100%',
@@ -91,25 +93,69 @@ export default ({
   const styles = useStyles(useTheme())
   const [created, setCreated] = useState(0)
   const [all, setAll] = useState(0)
+  const [openCreate, setOpenCreate] = useState(false)
+  const [users, setUsers] = useState([])
 
-  const goSettings = () => {
-    history.push('/settings')
-  }
-
-  const count = async () => {
-    if (!oauth) return
-
-    const {data} = await axios.get(`http://127.0.0.1:3001/count`, {
+  const getUsers = async () => {
+    const nooauth = oauth.userType === 'no-oauth'
+    const {data} = await axios.get('http://127.0.0.1:3001/users', {
       headers: {
         'Authorization': `Bearer ${oauth.access_token}`,
-        'no-oauth': true
+        'no-oauth': nooauth
       },
       params: {
         email: oauth.email
       }
     })
-    setCreated(data[0])
-    setAll(data[1])
+
+    let arr = []
+    for (let i = 0; i < data.length; i++) {
+      let a = data[i]
+      let alone = true
+      for (let j = 0; j < data.length; j++) {
+        if (i !== j) {
+          let b = data[j]
+          if ( (a.firstname + ' ' + a.lastname) === (b.firstname + ' ' + b.lastname) ) {
+            alone = false
+            break
+          }
+        }
+      }
+      arr.push({
+        user: data[i],
+        bymail: !alone
+      })
+    }
+
+    setUsers(arr)
+  }
+
+  const goSettings = () => {
+    history.push('/settings')
+  }
+
+  const createChannel = async () => {
+    await getUsers()
+
+    setOpenCreate(true)
+  }
+
+  const count = async () => {
+    if (oauth) {
+      console.log(oauth)
+      const nooauth = oauth.userType === 'no-oauth'
+      const {data} = await axios.get(`http://127.0.0.1:3001/count`, {
+        headers: {
+          'Authorization': `Bearer ${oauth.access_token}`,
+          'no-oauth': nooauth
+        },
+        params: {
+          email: oauth.email
+        }
+      })
+      setCreated(data[0])
+      setAll(data[1])
+    }
   }
 
   count()
@@ -154,7 +200,7 @@ export default ({
         >
           <Grid item xs>
             <div css={styles.card}>
-              <ChannelIcon css={styles.icon} />
+              <ChannelIcon css={styles.icon} onClick={createChannel}/>
               <Typography color="textPrimary">
                 Create channels
               </Typography>
@@ -169,7 +215,13 @@ export default ({
               </Typography>
             </div>
           </Grid>
-        </Grid>
+        </Grid>   
+        <CreateChannelDialog
+          open={openCreate}
+          setOpen={setOpenCreate}
+          oauth={oauth}
+          users={users}
+        />
       </div>
   );
 }

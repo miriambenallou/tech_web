@@ -137,6 +137,51 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const CssTextField = withStyles({
+  root: {
+    '& .Mui-error': {
+      color: '#f44336'
+    },
+    '& .MuiFormLabel-root.Mui-error': {
+      color: '#f44336'
+    },
+    '& label.Mui-focused': {
+      color: 'green'
+    },
+    '& .MuiInput-underline:after': {
+      borderBottomColor: 'green',
+    },
+    '& .MuiOutlinedInput-root': {
+      '&.Mui-error .MuiOutlinedInput-notchedOutline': {
+        borderColor: '#f44336'
+      },
+      '& fieldset': {
+        borderColor: 'dark-grey',
+      },
+      '&:hover fieldset': {
+        borderColor: 'white',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: 'green',
+      },
+    }
+  },
+})(TextField)
+
+let manageOauthConn_lock = 0
+
+const manageOauthConn = async (oauth) => {
+  if (manageOauthConn_lock > 1) return
+
+  await axios.post("http://127.0.0.1:3001/users", {
+      email: oauth.email,
+      firstname: '',
+      lastname: '',
+      password: '',
+      type: 'oauth'
+  })
+}
+
 export default ({
   oauth
 }) => {
@@ -148,6 +193,11 @@ export default ({
   const [last, setLast] = useState(oauth.lastname)
   const [email, setEmail] = useState(oauth.email)
   const [open, setOpen] = useState(false)
+  const [error, setError] = useState({
+    first: (oauth.firstname.length === 0 ? "Firstname is mandatory." : ""),
+    last: (oauth.lastname.length === 0 ? "Lastname is mandatory." : ""),
+    email: "",
+  })
   const {setNoOauth, setOauth} = useContext(Context)
 
   const handleChangeFile = (e) => {
@@ -163,7 +213,16 @@ export default ({
   }
 
   const handleDeleteSure = async () => {
-    await axios.delete(`http://127.0.0.1:3001/users/${oauth.email}`)
+    const nooauth = oauth.userType === 'no-oauth'
+    await axios.delete(`http://127.0.0.1:3001/users/${oauth.email}`, {
+      headers: {
+        'Authorization': `Bearer ${oauth.access_token}`,
+        'no-oauth': nooauth,
+    },
+    params: {
+        email: oauth.email,
+    }
+    })
     setOpen(false)
     setOauth(null)
   }
@@ -173,7 +232,13 @@ export default ({
   }
 
   const handleSave = async () => {
-    const {data} = await axios.get(`http://127.0.0.1:3001/users/${oauth.email}`)
+    if (first.length === 0 || last.length === 0 || email.length === 0 || error.email.length > 0) {
+      return
+    }
+
+    const {data} = await axios.get(`http://127.0.0.1:3001/users/${oauth.email}`, {})
+    if (!data) return
+
     const obj = {
       user: {
         firstname: first,
@@ -181,27 +246,104 @@ export default ({
         email: email,
         id: data.id,
         gravatar: gravatar,
+        access_token: oauth.access_token,
       }
     }
-    const dt = await axios.put(`http://127.0.0.1:3001/users/${oauth.email}`, obj)
-    setNoOauth(obj.user)
+    const nooauth = oauth.userType === 'no-oauth'
+    const dt = await axios.put(`http://127.0.0.1:3001/users/${oauth.email}`, {
+      headers: {
+        'Authorization': `Bearer ${oauth.access_token}`,
+        'no-oauth': nooauth
+      },
+      params: {
+        email: oauth.email,
+        usr: obj,
+      }
+    })
+    console.log(dt)
+    if (oauth.userType === "no-oauth") {
+      setNoOauth(obj.user)
+    } else {
+      obj.user.id_token = oauth.id_token
+      setOauth(obj.user)
+    }
   }
-
-  const handleChangeFirst = (e) => {
-    setFirst(e.target.value)
-  }
-
-  const handleChangeLast = (e) => {
-    setLast(e.target.value)
-  }
+  console.log(oauth)
 
   const handleChangeEmail = (e) => {
     setEmail(e.target.value)
+    if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email.value) == false) {
+      setError({
+        first: error.first,
+        last: error.last,
+        email: "Invalid email"
+      })
+    } else {
+      setError({
+        first: error.first,
+        last: error.last,
+        email: ""
+      })
+    }
   }
 
   const handleChangeLang = (e) => {
     setLanguage(e.target.dataset.value)
   }
+
+  const handleChangeFirst = (e) => {
+    setFirst(e.target.value)
+    if (e.target.value.length === 0) {
+      setError({
+        first: "Firstname is mandatory.",
+        last: error.last,
+        email: error.email
+      })
+    } else {
+      setError({
+        first: "",
+        last: error.last,
+        email: error.email
+      })
+    }
+  }
+
+  const handleChangeLast = (e) => {
+    setLast(e.target.value)
+    if (e.target.value.length === 0) {
+      setError({
+        last: "Lastname is mandatory.",
+        first: error.first,
+        email: error.email
+      })
+    } else {
+      setError({
+        last: "",
+        first: error.first,
+        email: error.email
+      })
+    }
+  }
+
+  const newUserOauth = async () => {
+    manageOauthConn_lock++
+    await manageOauthConn(oauth)
+
+    const {data} = await axios.get(`http://127.0.0.1:3001/users/${oauth.email}`)
+    if (data && data.firstname.length > 0) {
+      setOauth({
+        firstname: data.firstname,
+        lastname: data.lastname,
+        email: oauth.email,
+        access_token: oauth.access_token,
+        id_token: oauth.id_token,
+        gravatar: (oauth.gravatar) ? oauth.gravatar : "monsterid",
+      })
+      window.location = '/'
+    }
+  }
+
+  if (oauth.firstname.length === 0) newUserOauth()
 
   return (
   <form className={classes.root} noValidate autoComplete="off">
@@ -241,39 +383,49 @@ export default ({
               </div>
               </div>
       </div>
-
-
+      <div>
+        {
+          oauth.firstname.length === 0 ? (
+            <h4>
+              Please enter your firstname and lastname to continue using this app.
+            </h4>
+          ) : (
+            ''
+          )
+        }
+      </div>
       <div id="name-container">
-      <TextField 
+      <CssTextField 
         variant="outlined" 
-        id="standard-required" 
         label = "First Name" 
         value={first} 
         onChange={handleChangeFirst}
-        disabled={oauth.userType !== 'no-oauth'}
+        error={error.first.length > 0}
+        helperText={error.first}
       />
-      <TextField 
-        id="second_txt" 
+      <CssTextField 
         variant="outlined" 
         label="Last Name" 
         value={last} 
         onChange={handleChangeLast}
-        disabled={oauth.userType !== 'no-oauth'}
+        error={error.last.length > 0}
+        helperText={error.last}
       />
       </div>
 
       <div id="email">
-      <TextField 
+      <CssTextField 
         variant="outlined" 
-        id="standard-required" 
         label="E-mail"
         value={email}
         onChange={handleChangeEmail}
         disabled={oauth.userType !== 'no-oauth'}
+        error={error.email.length > 0}
+        helperText={error.email}
       />
       </div>
 
-      <TextField
+      <CssTextField
           id="standard-select-language"
           select
           label="Select"
@@ -285,7 +437,7 @@ export default ({
               {option.label}
             </MenuItem>
           ))}
-      </TextField>
+      </CssTextField>
 
       <div id="button">
 

@@ -1,6 +1,7 @@
 
 import React, {useState} from 'react'
 import { useCookies } from 'react-cookie'
+import axios from 'axios'
 
 const Context = React.createContext()
 
@@ -17,7 +18,7 @@ export const Provider = ({
   return (
     <Context.Provider value={{
       oauth: oauth,
-      setOauth: (oauth) => {
+      setOauth: async (oauth) => {
         if (oauth) {
           const payload = JSON.parse(
             Buffer.from(
@@ -26,6 +27,17 @@ export const Provider = ({
           )
           oauth.email = payload.email
           oauth.userType = "oauth"
+          const {data} = axios.get(`http://127.0.0.1:3001/users/${oauth.email}`)
+          console.log(data)
+          if (data) {
+            oauth.firstname = (data.firstname) ? data.firstname : ''
+            oauth.lastname = (data.lastname) ? data.lastname : ''
+            oauth.gravatar = (data.gravatar) ? data.gravatar : "monsterid"
+          } else {
+            oauth.firstname = (oauth.firstname) ? oauth.firstname : ''
+            oauth.lastname = (oauth.lastname) ? oauth.lastname : ''
+            oauth.gravatar = (oauth.gravatar) ? oauth.gravatar : "monsterid"
+          }
           setCookie('oauth', oauth)
         } else {
           setCurrentChannel(null)

@@ -15,7 +15,7 @@ app.use(cors())
 
 app.get('/', (req, res) => {
   res.send([
-    '<h1>ECE DevOps Chat</h1>'
+    '<h1>ECE Chat -- Back-end</h1>'
   ].join(''))
 })
 
@@ -32,14 +32,12 @@ app.post('/admin/reset', async (req, res) => {
 
 // Count.
 app.get('/count', authenticate, async (req, res) => {
-  // console.log(req)
   const data = await db.count(req.user.email)
   res.json(data)
 })
 
 // Channels
 
-// app.get('/channels', async (req, res) => {
 app.get('/channels', authenticate, async (req, res) => {
   const channels = await db.channels.list(req.user.email)
   res.json(channels)
@@ -56,7 +54,7 @@ app.post('/channels', authenticate, async (req, res) => {
   res.status(201).json(channel)
 })
 
-app.get('/channels/:id', async (req, res) => {
+app.get('/channels/:id', authenticate, async (req, res) => {
   const channel = await db.channels.get(req.params.id)
   res.json(channel)
 })
@@ -80,13 +78,13 @@ app.delete('/channels/:id', authenticate, async (req, res) => {
 
 // Messages
 
-app.get('/channels/:id/messages', async (req, res) => {
+app.get('/channels/:id/messages', authenticate, async (req, res) => {
   const messages = await db.messages.list(req.params.id)
   res.json(messages)
 })
 
-app.post('/channels/:id/messages', async (req, res) => {
-  const message = await db.messages.create(req.params.id, req.body)
+app.post('/channels/:id/messages', authenticate, async (req, res) => {
+  const message = await db.messages.create(req.params.id, req.body.params.message)
   res.status(201).json(message)
 })
 
@@ -101,9 +99,7 @@ app.put('/channels/:id/messages', authenticate, async (req, res) => {
 
 app.delete('/channels/:id/messages', authenticate, async (req, res) => {
   const m = JSON.parse(req.query.message)
-  console.log(m)
   const msg = JSON.parse(await db.messages.get(req.params.id, m))
-  console.log(msg)
   if (msg.author === req.user.email) {
     await db.messages.delete(req.params.id, m.creation)
     res.status(201).json(null)
@@ -114,7 +110,7 @@ app.delete('/channels/:id/messages', authenticate, async (req, res) => {
 
 // Users
 
-app.get('/users', async (req, res) => {
+app.get('/users', authenticate, async (req, res) => {
   const users = await db.users.list()
   res.json(users)
 })
@@ -138,18 +134,18 @@ app.get('/users/:email', async (req, res) => {
   res.json(user)
 })
 
-app.put('/users/:email', async (req, res) => {
-  if (req.body.generate_token === true) { // Must generate a token for the user.
-    const token = uuid() + '-' + uuid()
-    const dt = await db.users.update(req.body.user, token)
-    res.status(201).json(dt)
-  } else { // Just edit the user.
-    const dt = await db.users.update(req.body.user)
-    res.status(201).json(dt)
-  }
+app.put('/users/:email/token', async (req, res) => {
+  const token = uuid() + '-' + uuid()
+  const dt = await db.users.update(req.body.user, token)
+  res.status(201).json(dt)
 })
 
-app.delete('/users/:email', async (req, res) => {
+app.put('/users/:email', authenticate, async (req, res) => {
+    const dt = await db.users.update(req.body.params.usr.user)
+    res.status(201).json(dt)
+})
+
+app.delete('/users/:email', authenticate, async (req, res) => {
   const data = await db.users.getByEmail(req.params.email)
   if (!data) throw Error("User does not exist")
   const dt = await db.users.delete(data.id)

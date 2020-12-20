@@ -99,10 +99,11 @@ export default ({
         }
     }
 
+    const nooauth = oauth.userType === 'no-oauth'
     await axios.post('http://127.0.0.1:3001/channels', {}, {
       headers: {
         'Authorization': `Bearer ${oauth.access_token}`,
-        'no-oauth': true
+        'no-oauth': nooauth
       },
       params: {
         email: oauth.email,

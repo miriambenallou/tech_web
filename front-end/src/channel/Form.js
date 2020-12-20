@@ -40,13 +40,23 @@ export default ({
   const [content, setContent] = useState('')
   const styles = useStyles(useTheme())
   const onSubmit = async () => {
+    const nooauth = oauth.userType === 'no-oauth'
     const {data: message} = await axios.post(
       `http://localhost:3001/channels/${channel.id}/messages`
     , {
-      content: content,
-      author: oauth.email,
-      name: oauth.firstname + ' ' + oauth.lastname,
-      creation: dayjs().valueOf()
+      headers: {
+        'Authorization': `Bearer ${oauth.access_token}`,
+        'no-oauth': nooauth
+      },
+      params: {
+        email: oauth.email,
+        message: {
+          content: content,
+          author: oauth.email,
+          name: oauth.firstname + ' ' + oauth.lastname,
+          creation: dayjs().valueOf()
+        }
+      }
     })
     addMessage(message)
     setContent('')

@@ -41,9 +41,13 @@ const manageOauthConn = async (oauth) => {
 
   // Try to create an account with the email specified in oauth.
   // If the user already has an account, no account is created.
-  await axios.post("http://127.0.0.1:3001/users", {
-    email: oauth.email
-  })
+  // await axios.post("http://127.0.0.1:3001/users", {
+  //   email: oauth.email,
+  //   firstname: '',
+  //   lastname: '',
+  //   password: '',
+  //   type: 'oauth'
+  // })
 }
 
 export default ({
@@ -62,7 +66,7 @@ export default ({
 
   if (oauth.userType === "oauth") {
     manageOauthConn_lock++
-    oauth = manageOauthConn(oauth)
+    manageOauthConn(oauth)
   }
   
   return (

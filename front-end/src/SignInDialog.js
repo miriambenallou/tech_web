@@ -85,11 +85,10 @@ export default ({
    if (data !== null) { // The user exists.
      if (data.password === pass) { // Password corresponds.
        // Generating a new access_token for this user.
-       await axios.put("http://127.0.0.1:3001/users/" + email.value, {
-         generate_token: true,
+       await axios.put(`http://127.0.0.1:3001/users/${email.value}/token`, {
          user: data
        })
-       const dt = await axios.get("http://127.0.0.1:3001/users/" + email.value)
+       const dt = await axios.get("http://127.0.0.1:3001/users/" + email.value, {})
        setOpenUp(false)
        redirect(dt.data)
 

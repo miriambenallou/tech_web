@@ -159,10 +159,11 @@ export default ({
       }
     }
 
+    const nooauth = oauth.userType === 'no-oauth'
     await axios.put(`http://127.0.0.1:3001/channels/${dialog.channelId}`, {
       headers: {
         'Authorization': `Bearer ${oauth.access_token}`,
-        'no-oauth': true,
+        'no-oauth': nooauth,
       },
       params: {
         email: oauth.email,
@@ -178,10 +179,11 @@ export default ({
   }
 
   const handleDelete = async () => {
+    const nooauth = oauth.userType === 'no-oauth'
     await axios.delete('http://127.0.0.1:3001/channels/' + dialog.channelId, {
       headers: {
         'Authorization': `Bearer ${oauth.access_token}`,
-        'no-oauth': true
+        'no-oauth': nooauth
       },
       params: {
           email: oauth.email,

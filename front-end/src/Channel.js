@@ -54,7 +54,16 @@ export default () => {
   }
   const fetchMessages = async () => {
     setMessages([])
-    const {data: messages} = await axios.get(`http://localhost:3001/channels/${channel.id}/messages`)
+    const nooauth = oauth.userType === 'no-oauth'
+    const {data: messages} = await axios.get(`http://localhost:3001/channels/${channel.id}/messages`, {
+      headers: {
+        'Authorization': `Bearer ${oauth.access_token}`,
+        'no-oauth': nooauth
+      },
+      params: {
+        email: oauth.email
+      }
+    })
     setMessages(messages)
     if(listRef.current){
       listRef.current.scroll()

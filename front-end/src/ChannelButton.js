@@ -12,7 +12,8 @@ export default ({
   styles,
   history,
   i,
-  setDialog
+  setDialog,
+  oauth
 }) => {
   const handleClickBtn = () => {
     setDialog({
@@ -37,11 +38,15 @@ export default ({
           {channel.name}
         </div>
         <div>
+          {(channel.creator === oauth.email ?
           <IconButton onClick={handleClickBtn}
           css={styles.button}
           >
           <TuneIcon />
           </IconButton>
+          :
+          ''
+          )}
         </div>
       </div>
   )

@@ -42,12 +42,21 @@ export default () => {
         <Route exact path="/">
           {
             oauth ? (
-              <Redirect
-                to={{
-                  pathname: "/channels",
-                  state: { from: location }
-                }}
-              />
+              oauth.firstname.length > 0 ? (
+                <Redirect
+                  to={{
+                    pathname: "/channels",
+                    state: { from: location }
+                  }}
+                />
+              ) : (
+                <Redirect
+                  to={{
+                    pathname: "/settings",
+                    state: { from: location }
+                  }}
+                />
+              )
             ) : (
               <Login />
             )
@@ -70,7 +79,16 @@ export default () => {
         <Route path="/channels">
           {
             oauth ? (
-              <Main oauth={oauth} />
+              oauth.firstname.length > 0 ? (
+                <Main oauth={oauth} />
+              ) : (
+                <Redirect
+                  to={{
+                    pathname: "/settings",
+                    state: { from: location }
+                  }}
+                />
+              )
             ) : (
               <Redirect
                 to={{
