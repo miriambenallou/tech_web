@@ -18,6 +18,12 @@ Run the tests with mocha:
 npm run test
 ```
 
-## Instructions
+Populate the database and start the application:
+```bash
+npm run develop
+```
 
-See "../lab.md" for the lab instructions.
+Pupulate the database without starting the application:
+```bash
+./bin/init
+```

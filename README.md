@@ -125,4 +125,4 @@ Application development
 * Avatar selection   
   *The user has the possibility to choose between a selection of gravatars in his account settings.*
 * Personal custom avatar   
-  *place your comments*
+  *On the settings page, the user can chose to upload a local image file (less than 50000 bits) to serve as an avatar*
