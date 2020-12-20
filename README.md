@@ -1,15 +1,15 @@
 
 # Chat application - final project
 
-*presentation, introduction, ...*
+*The aim of this project is to create a simple Chat web application, allowing its users to create and access channels, send and receive messages.*
 
 ## Usage
 
-*how to start and use the application, run the tests, ...*
+*How to start and use the application, run the tests,...*
 
 * Clone this repository, from your local machine:
   ```
-  git clone https://github.com/adaltas/ece-2020-fall-webtech-project.git webtech
+  git clone https://github.com/miriambenallou/tech_web.git webtech
   cd webtech
   ```
 * Install [Go](https://golang.org/) and [Dex](https://dexidp.io/docs/getting-started/). For example, on Ubuntu, from your project root directory:   
@@ -60,48 +60,69 @@
 
 ## Author
 
-*name, email, ...*
+*Pierre Herduin, e-mail : pierre.herduin@edu.ece.fr*
+*Miriam Benallou, e-mail : miriam.benallou@edu.ece.fr*
+*SI, Group 1*
 
 ## Tasks
 
 Project management
 
 * Naming convention   
-  *place your comments*
-* Project structure   
-  *place your comments*
+  *The naming convention was made by respecting the good practices of JavaScript ES6.*
+* Project structure  
+  Here is the structure of our project :
+
+      ```
+      back-end/
+        bin/
+        db/
+        lib/
+        test/
+        ...
+      front-end/
+        public/
+        src/
+          channel/
+          icons/
+          ...
+        <Other configuration files like: package.json>
+      dex/
+      dex-config/
+      README.md
+      ...
+      ```
+  *This web application project is structured in three parts, the back-end responsible for storing and managing data and the front-end, responsible for the direct interactions with the users. And the dex server, that deals with the third-part authentication.*
 * Code quality   
-  *place your comments*
+  *Throughout the project, we did our best to produce a code of good quality and correctly indented.*
 * Design, UX   
-  *place your comments*
+  *Use of React UI framework MaterialUI. The design was thought to be as intuitive as possible, and to meet the user's needs. We followed the user experience principles to make it accessible and consistent.*
 * Git and DevOps   
-  *place your comments*
+  *We used GitHub as a versioning tool, to manage the project.*
 
 Application development
 
+* Sign-in form & account creation
+  *When lauching the web application, the user can register and login without using Oauth.*
 * Welcome screens   
-  *place your comments*
+  *We consider there are two welcome screens in this project. The first one is the one when you launch the application. The user has the choice to login via Oauth or via a regular no-Oauth identification. He has the choice to create an account if he doesn't already have one. The second one is when the user logs in. The header is changed with the addition of log-out and home icons, and the user's gravatar. The page contains relevant information about the user:  number of channels he created, total number of channels in which he's a member, e-mail address.*
 * New channel creation   
-  *place your comments*
+  *The user has the possibility to create a new channel. He can access the channel creation through a button on top of the channels list, or through the welcome page. After choosing the channel name and its members via a pop-up Dialog, the user validates his choices and the new channel is created in the back-end.*
 * Channel membership and access   
-  *place your comments*
+  *The user only has access the channels in which he's a member. The creator of the channel can delete it, and add other members to the group chat. The creator is also in the list of members. Other users don't have access to these functionalities.*
 * Ressource access control   
-  *place your comments*
+  *Every request is secured with access tokens verification. This is true for the Oauth users and Non-Oauth users.*
 * Invite users to channels   
-  *place your comments*
+  *Inviting users to channels is possible when creating or modifying a channel, through a Popup Dialog. The creator of the channel is the only one that can delete the channel, change its name, invite users.*
 * Message modification   
-  *place your comments*
+  *The sender can modify his messages. The message modification is accessible through an icon in the message bubble. On click, a pop up appears allowing the user to modify the message.*
 * Message removal   
-  *place your comments*
+  *The same rules as modification apply for message removal.*
 * Account settings   
-  *place your comments*
+  *The user has access to his account settings via the header, by clicking on his gravatar, or via the welcome page. This includes his name, email address, language and gravatar preferences.*
 * Gravatar integration   
-  *place your comments*
+  *Gravatars were integrated in our web application by using the react-gravatar component. If the gravatar doesn't already exist, the user has a default monsterid gravatar.*
 * Avatar selection   
-  *place your comments*
+  *The user has the possibility to choose between a selection of gravatars in his account settings.*
 * Personal custom avatar   
   *place your comments*
-
-## Bonus
-
-*place your comments*
