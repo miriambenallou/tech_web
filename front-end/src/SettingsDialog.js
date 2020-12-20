@@ -200,8 +200,35 @@ export default ({
   })
   const {setNoOauth, setOauth} = useContext(Context)
 
+  // https://stackoverflow.com/questions/6150289/how-can-i-convert-an-image-into-base64-string-using-javascript
+  // To convert an image file into a base64 string.
   const handleChangeFile = (e) => {
     console.log(e.target.files[0])
+    const file = e.target.files[0]
+    var reader = new FileReader();
+
+    if (file.size > 50000) return
+
+    reader.onloadend = function() {
+      console.log('RESULT', reader.result)
+      const obj = {
+        user: {
+          firstname: oauth.firstname,
+          lastname: oauth.lastname,
+          email: oauth.email,
+          gravatar: reader.result,
+          access_token: oauth.access_token,
+        }
+      }
+      setGravatar(reader.result)
+      if (oauth.userType === "no-oauth") {
+        setNoOauth(obj.user)
+      } else {
+        obj.user.id_token = oauth.id_token
+        setOauth(obj.user)
+      }
+    }
+    reader.readAsDataURL(file);
   }
 
   const handleChangeSelect = (e) => {
@@ -349,7 +376,17 @@ export default ({
   <form className={classes.root} noValidate autoComplete="off">
     <div id="container">
       <div id= "avatar">
-        <Gravatar id="gravatar" email={oauth.email} default={gravatar} />
+        {
+          oauth.gravatar.includes("base64") ? (
+            <img src={oauth.gravatar} style={{
+              maxWidth:'100px',
+              maxHeight:'100px',
+              borderRadius:'50%'
+            }}/>
+          ) : (
+            <Gravatar id="gravatar" email={oauth.email} default={gravatar} />
+          )
+        }
         <input
             id="input_file"
             hidden
@@ -377,7 +414,7 @@ export default ({
                     helperText="Choose one"
                   >
                     {gravatars.map((option) => (
-                        <Gravatar id={option} email={oauth.email} default={option} onClick={handleChangeSelect}/>
+                        <Gravatar id={option} email={oauth.email} default={option} onClick={handleChangeSelect} />
                     ))}
                 </TextField>
               </div>

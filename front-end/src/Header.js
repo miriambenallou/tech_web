@@ -146,7 +146,17 @@ export default ({
         {
           oauth ?
             <div id= "gravatar_div" style={styles.gravatar}>
-              <Gravatar id="gravatar" email={oauth.email} default={oauth.gravatar ? oauth.gravatar : "monsterid"} onClick={goSettings}/>
+              {
+                oauth.gravatar.includes("base64") ? (
+                  <img src={oauth.gravatar} style={{
+                    maxWidth:'100px',
+                    maxHeight:'100px',
+                    borderRadius:'50%'
+                  }}/>
+                ) : (
+                  <Gravatar id="gravatar" email={oauth.email} default={oauth.gravatar ? oauth.gravatar : "monsterid"} onClick={goSettings}/>
+                )
+              }
             </div>
 
           :
