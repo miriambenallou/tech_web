@@ -50,10 +50,10 @@ module.exports = {
       }))
       return data
     },
-    delete: (id, channel) => {
-      const original = store.channels[id]
+    delete: async (id) => {
+      const original = await db.get(`channels:${id}`)
       if(!original) throw Error('Unregistered channel id')
-      delete store.channels[id]
+      await db.del(`channels:${id}`)
     }
   },
   messages: {
@@ -88,6 +88,36 @@ module.exports = {
         })
       })
     },
+    get: async (channelId, message) => {
+      if (!channelId) throw Error('Invalid channel id')
+      if(!message.creation) throw Error('Invalid message')
+      const msg = await db.get(`messages:${channelId}:${message.creation}`)
+      return msg
+    },
+    update: async (channelId, message) => {
+      if(!channelId) throw Error('Invalid channel id')
+      if(!message.author) throw Error('Invalid message')
+      if(!message.content) throw Error('Invalid message')
+      const original = await db.get(`messages:${channelId}:${message.creation}`)
+      if (!original) {
+        if(!message.content) throw Error('Message does not exist so cannot be modified')
+      }
+
+      await db.del(`messages:${channelId}:${message.creation}`)
+
+      await db.put(`messages:${channelId}:${message.creation}`, JSON.stringify({
+        author: message.author,
+        content: message.content,
+        name: message.name,
+        creation: message.creation
+      }))
+      return merge(message, {channelId: channelId})
+    },
+    delete: async (channelId, creation) => {
+      const msg = await db.get(`messages:${channelId}:${creation}`)
+      if (!msg) throw Error('Unregistered message')
+      await db.del(`messages:${channelId}:${creation}`)
+    }
   },
   users: {
     create: async (user) => {

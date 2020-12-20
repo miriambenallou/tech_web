@@ -9,6 +9,8 @@ import CardContent from '@material-ui/core/CardContent';
 import dayjs from 'dayjs'
 import calendar from 'dayjs/plugin/calendar'
 import updateLocale from 'dayjs/plugin/updateLocale'
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { CardHeader, IconButton } from '@material-ui/core';
 dayjs.extend(calendar)
 dayjs.extend(updateLocale)
 dayjs.updateLocale('en', {
@@ -25,19 +27,48 @@ const styles = {
 
 export default ({
   message,
-  content
+  content,
+  fromMe,
+  setDialog
 }) => {
-  console.log(dayjs(message.creation).calendar())
-  console.log(dayjs(1602232260000).calendar())
+  
+  const handleClick = (e) => {
+    console.log(message)
+    setDialog({
+      open: true,
+      message: message,
+      content: content,
+    })
+  }
+  
   return (
     <Card variant='outlined'>
+      <CardHeader
+        subheader={
+          <div>
+            <p style={styles.name}>
+            <span>{message.name}</span>
+            {' - '}
+            <span>{dayjs(parseInt(message.creation)).calendar()}</span>
+            </p>
+          </div>
+        }
+        action={
+          fromMe ?
+            <IconButton 
+              aria-label="settings"
+              onClick={handleClick}
+            >
+              <MoreVertIcon />
+            </IconButton>
+          : 
+            ''
+        }
+      />
       <CardContent>
-        <p style={styles.name}>
-          <span>{message.name}</span>
-          {' - '}
-          <span>{dayjs(parseInt(message.creation)).calendar()}</span>
-        </p>
-        <div dangerouslySetInnerHTML={{__html: content}}>
+        
+        <div>
+          {content.split('\n').map(str => <p>{str}</p>)}
         </div>
       </CardContent>
     </Card>

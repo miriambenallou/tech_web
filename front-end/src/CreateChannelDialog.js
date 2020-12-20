@@ -99,18 +99,18 @@ export default ({
         }
     }
 
-    await axios.post('http://127.0.0.1:3001/channels', oauth, {
-        headers: {
+    await axios.post('http://127.0.0.1:3001/channels', {}, {
+      headers: {
         'Authorization': `Bearer ${oauth.access_token}`,
         'no-oauth': true
-        },
-        params: {
-            email: oauth.email,
-            channel: {
-                name: name,
-                members: arr
-            }
+      },
+      params: {
+        email: oauth.email,
+        channel: {
+            name: name,
+            members: arr,
         }
+      }
     })
 
     setName("")

@@ -228,10 +228,14 @@ const config = {
     creator: "pierre@yahoo.com",
     name: "channel14"
   }].map( async (channel) => {
-    const {data: {id}} = await axios.post(`http://localhost:${config.port}/channels`, {
-      name: channel.name,
-      members: channel.members,
-      creator: channel.creator
+    const {data: {id}} = await axios.post(`http://localhost:${config.port}/channels`, {}, {
+      params: {
+        email: channel.creator,
+        channel: {
+          name: channel.name,
+          members: channel.members,
+        },
+      },
     })
     return Promise.all( channel.messages.map( async (message) => {
       await axios.post(`http://localhost:${config.port}/channels/${id}/messages`, message)
@@ -244,6 +248,34 @@ const config = {
       firstname: "Pierre",
       lastname: "Herduin",
       password: "1aXWa5To2gz2PUzW1mzUideOd7aXA5xsSOP_jYF1ITk",
+      type: "no-oauth",
+    },
+    {
+      email: "jeantintin@gmail.com",
+      firstname: "Jean",
+      lastname: "Tintin",
+      password: "RsI1o1UPdMxMBXt_MMH1PTvncTlwQsNFzwMolRIUMX4",
+      type: "no-oauth",
+    },
+    {
+      email: "donald@trump.com",
+      firstname: "Donald",
+      lastname: "Trump",
+      password: "QTjPvF028x6K4J70BEu4jAycbyiaahwnszWpnR2NyG8",
+      type: "no-oauth",
+    },
+    {
+      email: "tintin@milou.com",
+      firstname: "Jean",
+      lastname: "Tintin",
+      password: "Ne1lsesuhwhujX6gFU6I13_ruPxTrzB_KlQ7LUR2ffA",
+      type: "no-oauth",
+    },
+    {
+      email: "miriambenallou@edu.ece.fr",
+      firstname: "Miriam",
+      lastname: "Benallou",
+      password: "LSE0Y172x413g2KzBPa4usdt8c0dBy9Q6lYUWBa9MvM",
       type: "no-oauth",
     },
   ].map( async (user) => {

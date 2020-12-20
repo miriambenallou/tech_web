@@ -34,7 +34,7 @@ app.post('/admin/reset', async (req, res) => {
 
 // app.get('/channels', async (req, res) => {
 app.get('/channels', authenticate, async (req, res) => {
-  const channels = await db.channels.list(req.query.email)
+  const channels = await db.channels.list(req.user.email)
   res.json(channels)
 })
 
@@ -45,7 +45,6 @@ app.post('/channels', authenticate, async (req, res) => {
     members: c.members,
     creator: req.query.email
   }
-  console.log(chan)
   const channel = await db.channels.create(chan)
   res.status(201).json(channel)
 })
@@ -55,15 +54,17 @@ app.get('/channels/:id', async (req, res) => {
   res.json(channel)
 })
 
-app.put('/channels/:id', async (req, res) => {
-  const channel = await db.channels.update(req.params.id, req.body)
+app.put('/channels/:id', authenticate, async (req, res) => {
+  const c = req.body.params.channel
+  const channel = await db.channels.update(req.params.id, c)
   res.json(channel)
 })
 
 app.delete('/channels/:id', authenticate, async (req, res) => {
-  const c = JSON.parse(req.query.channel)
-  if (c.creator === req.query.email) {
-    await db.channels.delete(req.query)
+  const channel = await db.channels.get(req.params.id)
+
+  if (channel.creator === req.user.email) {
+    db.channels.delete(req.params.id)
     res.status(201).json(null)
   } else {
     res.status(401).json({msg: "Not authorized to delete this channel !"})
@@ -80,6 +81,28 @@ app.get('/channels/:id/messages', async (req, res) => {
 app.post('/channels/:id/messages', async (req, res) => {
   const message = await db.messages.create(req.params.id, req.body)
   res.status(201).json(message)
+})
+
+app.put('/channels/:id/messages', authenticate, async (req, res) => {
+  if (req.body.params.message.author === req.user.email) {
+    const message = await db.messages.update(req.params.id, req.body.params.message)
+    res.status(201).json(message)
+  } else {
+    res.status(401).json({msg: "Cannot modify other people's messages"})
+  }
+})
+
+app.delete('/channels/:id/messages', authenticate, async (req, res) => {
+  const m = JSON.parse(req.query.message)
+  console.log(m)
+  const msg = JSON.parse(await db.messages.get(req.params.id, m))
+  console.log(msg)
+  if (msg.author === req.user.email) {
+    await db.messages.delete(req.params.id, m.creation)
+    res.status(201).json(null)
+  } else {
+    res.status(401).json({msg: "Not authorized to delete this message"})
+  }
 })
 
 // Users

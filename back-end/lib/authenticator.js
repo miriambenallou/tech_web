@@ -20,18 +20,28 @@ module.exports = ({jwks_uri} = {}) => {
   }
   console.log(jwks_uri)
   return async (req, res, next) => {
-    if(! req.headers['authorization'] ){
+    // console.log("=============================")
+    // console.log(req.headers)
+    // console.log("#####")
+    // console.log(req.body)
+    // if (req.body.headers) {
+    //   console.log(req.body.headers['Authorization'])
+    // }
+    // console.log("#####")
+    if(! req.headers['authorization'] && !req.body.headers['Authorization']){
       res.status(401).send('Missing Access Token')
       return
     }
-    const header = req.headers['authorization']
-    const nooauth = req.headers['no-oauth']
+
+    // console.log("ICI")
+    const header = (req.headers['authorization']) ? req.headers['authorization'] : req.body.headers['Authorization']
+    const nooauth = (req.headers['authorization']) ? req.headers['no-oauth'] : req.body.headers['no-oauth']
     const [type, access_token] = header.split(' ')
     if(type !== 'Bearer'){
       res.status(401).send('Authorization Not Bearer')
       return
     }
-
+    // console.log(header)
     if (!nooauth) { // With oauth.
       const key = await fetchKeyFromOpenIDServer(jwks_uri, access_token)
       // Validate the payload
@@ -43,16 +53,16 @@ module.exports = ({jwks_uri} = {}) => {
         res.status(401).send('Invalid Access Token')
       }
     } else { // No oauth.
-      const usr = await db.users.getByEmail(req.query.email)
-
+      const mail = (req.query.email) ? req.query.email : req.body.params.email
+      const usr = await db.users.getByEmail(mail)
+      // console.log(usr)
       if (usr.access_token === access_token) {
         req.user = usr
+        // console.log(req)
         next()
       } else {
         res.status(401).send('Invalid Access Token -- no-oauth')
       }
-
-      // const token = await db.user.getToken()
     }
   }
 }

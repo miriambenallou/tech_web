@@ -1,4 +1,4 @@
-import {forwardRef, useImperativeHandle, useLayoutEffect, useRef, useContext} from 'react'
+import {forwardRef, useImperativeHandle, useLayoutEffect, useRef, useContext, useState} from 'react'
 /** @jsx jsx */
 import { jsx } from '@emotion/core'
 // Layout
@@ -15,6 +15,7 @@ import updateLocale from 'dayjs/plugin/updateLocale'
 
 import Context from '../Context'
 import Message from './Message'
+import MessageDialog from './MessageDialog'
 
 dayjs.extend(calendar)
 dayjs.extend(updateLocale)
@@ -92,6 +93,9 @@ export default forwardRef(({
   messages,
   onScrollDown
 }, ref) => {
+  const [dialog, setDialog] = useState({
+    open: false
+  })
   const styles = useStyles(useTheme())
   // Expose the `scroll` action
   useImperativeHandle(ref, () => ({
@@ -129,18 +133,20 @@ export default forwardRef(({
             .use(remark2rehype)
             .use(html)
             .processSync(message.content)
+            const cont = content.substring(3).slice(0, -4)
             return (
               <li key={i} css={styles.message}
                 id={
                   message.author === oauth.email ? 'from-me' : 'from-others'
                 }
               >
-                <Message message={message} content={content} />
+                <Message message={message} content={cont} fromMe={message.author === oauth.email} setDialog={setDialog} />
               </li>
             )
         })}
       </ul>
       <div ref={scrollEl} />
+      <MessageDialog dialog={dialog} setDialog={setDialog} oauth={oauth} />
     </div>
   )
 })

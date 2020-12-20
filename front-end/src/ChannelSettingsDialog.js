@@ -159,17 +159,36 @@ export default ({
       }
     }
 
-    await axios.put("http://127.0.0.1:3001/channels/" + dialog.channelId, {
-      name: name,
-      creator: dialog.creator,
-      members: arr,
+    await axios.put(`http://127.0.0.1:3001/channels/${dialog.channelId}`, {
+      headers: {
+        'Authorization': `Bearer ${oauth.access_token}`,
+        'no-oauth': true,
+      },
+      params: {
+        email: oauth.email,
+        channel: {
+          name: name,
+          creator: dialog.creator,
+          members: arr,
+        }
+      }
     })
     document.location = document.location
     handleClose()
   }
 
   const handleDelete = async () => {
-    await axios.
+    await axios.delete('http://127.0.0.1:3001/channels/' + dialog.channelId, {
+      headers: {
+        'Authorization': `Bearer ${oauth.access_token}`,
+        'no-oauth': true
+      },
+      params: {
+          email: oauth.email,
+      }
+    })
+    document.location = document.location
+    handleClose()
   }
 
   return (
