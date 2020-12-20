@@ -106,6 +106,7 @@ const useStyles = makeStyles((theme) => ({
       flexDirection:'column',
       justifyContent:"center",
       "& #avatar_options": {
+
         '& > div' : {
           margin: '15px',
         },
@@ -161,11 +162,17 @@ export default ({oauth}) => {
               <div> <p> Or </p> </div>
               <div>
                 <TextField
-                    id="standard-select-language"
+                    id="select-gravatar"
                     select
                     value={gravatar}
-                    
                     helperText="Choose one"
+                    css={{
+                    "& .MuiList-root" : {
+                      display: 'flex',
+                      backgroundColor:'white',
+                      flexDirection: 'column',
+                    },
+                  }}
                   >
                     {gravatars.map((option) => (
                         <Gravatar email={''} default={option} />

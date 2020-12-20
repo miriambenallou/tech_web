@@ -23,12 +23,12 @@ dayjs.updateLocale('en', {
     sameElse: 'DD/MM/YYYY hh:mm'
   }
 })
-
 const useStyles = (theme) => ({
   root: {
     minHeight: '100%',
     position: 'relative',
     flex: '1 1 auto',
+    overflowX: 'hidden',
     'pre': {
 
       overflowY: 'auto',
